@@ -7,14 +7,11 @@ import (
 )
 
 type User struct {
-	ID          uuid.UUID `gorm:"type:uuid;primaryKey"`
+	DBModel
 	Name        string    `json:"name"`
 	DateOfBirth time.Time `json:"date_of_birth"`
 	PhoneNumber string    `json:"phone_number"`
 	Email       string    `gorm:"unique" json:"email"`
 	Password    string    `json:"password"`
 	Role        string    `gorm:"default:'user'" json:"role"`
-	CreatedAt   time.Time `json:"created_at"`
-	ModifiedAt  time.Time
-	DeletedAt   time.Time
 }
