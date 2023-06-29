@@ -13,7 +13,7 @@ type User struct {
 	PhoneNumber string    `json:"phone_number"`
 	Email       string    `gorm:"unique" json:"email"`
 	Password    string    `json:"password"`
-	Role        string    `gorm:"type:ENUM('user','admin','superAdmin');default:'user'" json:"role"`
+	Role        string    `gorm:"default:'user'" json:"role"`
 	CreatedAt   time.Time `json:"created_at"`
 	ModifiedAt  time.Time
 	DeletedAt   time.Time
