@@ -12,6 +12,15 @@ import (
 	"gorm.io/gorm"
 )
 
+type PGRepository struct {
+	DB *gorm.DB
+}
+
+func NewGormDatabase() *PGRepository {
+	db, _ := GormInit()
+	return &PGRepository{DB: db}
+}
+
 func GormInit() (*gorm.DB, error) {
 	err := godotenv.Load()
 	if err != nil {
