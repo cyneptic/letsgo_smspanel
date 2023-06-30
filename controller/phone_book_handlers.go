@@ -42,7 +42,7 @@ func (h *PhoneBookHandler) CreatePhoneBookHandler(c echo.Context) error {
 
 	var phoneBookModel entities.PhoneBook
 	if err := c.Bind(&phoneBookModel); err != nil {
-		return c.JSON(http.StatusBadRequest, "Invalid request body")
+		return c.JSON(http.StatusBadRequest, "invalid request body")
 	}
 	phoneBookModel.UserId = userID
 
@@ -118,7 +118,7 @@ func (h *PhoneBookHandler) UpdatePhoneBookHandler(c echo.Context) error {
 
 	var phoneBookModel entities.PhoneBook
 	if err := c.Bind(&phoneBookModel); err != nil {
-		return c.JSON(http.StatusBadRequest, "Invalid request body")
+		return c.JSON(http.StatusBadRequest, "invalid request body")
 	}
 	phoneBookModel.UserId = userID
 	phoneBookModel.ID = phoneBookID
