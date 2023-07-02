@@ -2,6 +2,7 @@ package provider
 
 import (
 	"fmt"
+	"net/http"
 	"strings"
 )
 
@@ -22,10 +23,17 @@ func (s *KavenegarProvider) makeReceivers(receiver []string) string {
 
 }
 
-func (s *KavenegarProvider) SendMessage(sender, msg string, receivers []string) (isSuccessful bool) {
-	//response, _ := http.Get(s.makeRequestUrl(sender, s.makeReceivers(receivers), msg))
-	//if response.StatusCode == http.StatusOK {
-	//	return true
-	//}
-	return true
+func (s *KavenegarProvider) SendMessage(sender, msg string, receivers interface{}) (isSuccessful bool) {
+	var receiverNumbers string
+	switch receivers.(type) {
+	case string:
+		receiverNumbers = receivers.(string)
+	case []string:
+		receiverNumbers = s.makeReceivers(receivers.([]string))
+	default:
+		return false
+	}
+	response, _ := http.Get(s.makeRequestUrl(sender, receiverNumbers, msg))
+
+	return response.StatusCode == http.StatusOK
 }
