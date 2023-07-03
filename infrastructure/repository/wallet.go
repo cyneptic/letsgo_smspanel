@@ -7,14 +7,14 @@ import (
 	"gorm.io/gorm"
 )
 
-func (r *PGRepository) GenerateWalletRepository(wallet entities.Wallet) error {
+func (r *PGRepository) GenerateWallet(wallet entities.Wallet) error {
 	result := r.DB.Create(&wallet)
 	if result.Error != nil {
 		return result.Error
 	}
 	return nil
 }
-func (r *PGRepository) ChargeWalletRepository(walletID , userID uuid.UUID , amount int)  error {
+func (r *PGRepository) ChargeWallet(walletID, userID uuid.UUID, amount int) error {
 
 	// 1. Check if there is a wallet with the given walletID
 	var wallet entities.Wallet
@@ -40,25 +40,14 @@ func (r *PGRepository) ChargeWalletRepository(walletID , userID uuid.UUID , amou
 
 	return nil
 }
-func (r *PGRepository) GetWalletAmountRepository(walletID  uuid.UUID) (*entities.Wallet, error) {
+func (r *PGRepository) GetWallet(walletID uuid.UUID) (*entities.Wallet, error) {
 	var wallet entities.Wallet
 	err := r.DB.First(&wallet, "id = ?", walletID).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return nil , fmt.Errorf("wallet not found")
+			return nil, fmt.Errorf("wallet not found")
 		}
-		return nil , err
-	}
-	return &wallet, nil
-}
-func (r *PGRepository) HasEnoughCreditRepository(walletID uuid.UUID) (*entities.Wallet, error) {
-	var wallet entities.Wallet
-	err := r.DB.First(&wallet, "id = ?", walletID).Error
-	if err != nil {
-		if err == gorm.ErrRecordNotFound {
-			return nil , fmt.Errorf("wallet not found")
-		}
-		return nil , err
+		return nil, err
 	}
 	return &wallet, nil
 }

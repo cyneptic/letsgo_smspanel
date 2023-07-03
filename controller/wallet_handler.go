@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"github.com/cyneptic/letsgo-smspanel/controller/validators"
 	"github.com/cyneptic/letsgo-smspanel/internal/core/ports"
 	"github.com/cyneptic/letsgo-smspanel/internal/core/service"
 	"github.com/google/uuid"
@@ -16,67 +17,81 @@ type WalletHandler struct {
 func NewWalletHandler() *WalletHandler {
 	svc := service.NewWalletService()
 	return &WalletHandler{
-		svc : svc,
+		svc: svc,
 	}
 }
-func AddWalletHRoutes(e *echo.Echo)  {
+func AddWalletHRoutes(e *echo.Echo) {
 	walletHandler := NewWalletHandler()
-	e.POST("/createWallet"  , walletHandler.GenerateWalletHandler)
-	e.PUT("/walletCharge" , walletHandler.ChargeWalletHandler)
-	e.GET("/walletAmount" , walletHandler.GetWalletAmountHandler)
-	e.GET("/walletCredit" , walletHandler.HasWalletCreditHandler)
+	e.POST("/wallet-create", walletHandler.GenerateWalletHandler)
+	e.PUT("/wallet-charge", walletHandler.ChargeWalletHandler)
+	e.GET("/wallet-amount", walletHandler.GetWalletAmountHandler)
+	e.GET("/wallet-has-amount", walletHandler.HasWalletCreditHandler)
 }
 
 func (w *WalletHandler) GenerateWalletHandler(c echo.Context) error {
 	paramID := c.QueryParam("id")
-	userID , err := uuid.Parse(paramID)
+	err := validators.GenerateWalletValidation(paramID)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest , err.Error())
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+	userID, err := uuid.Parse(paramID)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
 	}
 	err = w.svc.GenerateWalletService(userID)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest , err.Error())
+		return c.JSON(http.StatusBadRequest, err.Error())
 	}
-	return c.JSON(http.StatusOK , "wallet Generate successfully")
+	return c.JSON(http.StatusOK, "wallet Generate successfully")
 }
 func (w *WalletHandler) ChargeWalletHandler(c echo.Context) error {
-	// becuse I dont have access to auth middleware I will give userID from Query Param for testing
+
 	userID := c.QueryParam("userId")
-	userUUId , err := uuid.Parse(userID)
+	userUUId, err := uuid.Parse(userID)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest , err.Error())
+		return c.JSON(http.StatusBadRequest, err.Error())
 	}
 	walletID := c.QueryParam("walletId")
-	walletUUId , err := uuid.Parse(walletID)
+	walletUUId, err := uuid.Parse(walletID)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest , err.Error())
+		return c.JSON(http.StatusBadRequest, err.Error())
 	}
 	amountStr := c.QueryParam("amount")
 
-	amount , err := strconv.Atoi(amountStr)
+	amount, err := strconv.Atoi(amountStr)
 	if err != nil {
 		// Handle the error if the conversion fails
 		return c.JSON(http.StatusBadRequest, "Invalid amount")
 	}
-	err = w.svc.ChargeWalletService(walletUUId , userUUId , amount)
+	err = validators.ChargeWalletValidation(userID, walletID, amountStr, amount)
+	if err != nil {
+		// Handle the error if the conversion fails
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+	err = w.svc.ChargeWalletService(walletUUId, userUUId, amount)
 
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError , err.Error())
+		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
-	return c.JSON(http.StatusOK , "wallet charged successfully")
+	return c.JSON(http.StatusOK, "wallet charged successfully")
 }
 func (w *WalletHandler) GetWalletAmountHandler(c echo.Context) error {
 	walletID := c.QueryParam("walletId")
-	walletUUId , err := uuid.Parse(walletID)
-	if err != nil {
-		return c.JSON(http.StatusBadRequest , err.Error())
-	}
-	userID := c.QueryParam("userId")
-	userUUId , err := uuid.Parse(userID)
+	walletUUId, err := uuid.Parse(walletID)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
-	amount , err := w.svc.GetWalletAmountService(walletUUId , userUUId)
+	userID := c.QueryParam("userId")
+	userUUId, err := uuid.Parse(userID)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	err = validators.GetWalletAmountValidation(userID, walletID)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+	amount, err := w.svc.GetWalletAmountService(walletUUId, userUUId)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
@@ -85,21 +100,24 @@ func (w *WalletHandler) GetWalletAmountHandler(c echo.Context) error {
 }
 func (w *WalletHandler) HasWalletCreditHandler(c echo.Context) error {
 	walletID := c.QueryParam("walletId")
-	walletUUId , err := uuid.Parse(walletID)
-	if err != nil {
-		return c.JSON(http.StatusBadRequest , err.Error())
-	}
 	amountStr := c.QueryParam("amount")
-
-	amount , err := strconv.Atoi(amountStr)
+	err := validators.HasWalletCredit(walletID, amountStr)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+	walletUUId, err := uuid.Parse(walletID)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+	amount, err := strconv.Atoi(amountStr)
 	if err != nil {
 		// Handle the error if the conversion fails
 		return c.JSON(http.StatusBadRequest, "Invalid amount")
 	}
-	hasEnoughAmount , err := w.svc.HasEnoughCreditService(walletUUId , amount)
+	hasEnoughAmount, err := w.svc.HasEnoughCreditService(walletUUId, amount)
 	if err != nil {
 		// Handle the error if the conversion fails
 		return c.JSON(http.StatusBadRequest, "Invalid amount")
 	}
-	return  c.JSON(http.StatusOK, hasEnoughAmount)
+	return c.JSON(http.StatusOK, hasEnoughAmount)
 }

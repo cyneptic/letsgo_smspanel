@@ -6,8 +6,7 @@ import (
 )
 
 type WalletRepositoryContracts interface {
-	GenerateWalletRepository(wallet entities.Wallet) error
-	ChargeWalletRepository(walletID, userID uuid.UUID , amount int)  error
-	GetWalletAmountRepository(walletID  uuid.UUID) (*entities.Wallet, error)
-	HasEnoughCreditRepository(walletID uuid.UUID) (*entities.Wallet, error)
+	GenerateWallet(wallet entities.Wallet) error
+	ChargeWallet(walletID, userID uuid.UUID, amount int) error
+	GetWallet(walletID uuid.UUID) (*entities.Wallet, error)
 }
