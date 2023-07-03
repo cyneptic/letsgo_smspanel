@@ -64,7 +64,6 @@ func (h *ContactHandler) CreateContactByUsernameHandler(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, contact)
 }
-
 func (h *ContactHandler) FindContactByUsernameHandler(c echo.Context) error {
 	userId := c.Get("id").(string)
 
@@ -91,7 +90,6 @@ func (h *ContactHandler) FindContactByUsernameHandler(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, contact)
 }
-
 func (h *ContactHandler) UpdateContactByUsernameHandler(c echo.Context) error {
 	userId := c.Get("id").(string)
 
@@ -122,7 +120,6 @@ func (h *ContactHandler) UpdateContactByUsernameHandler(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, contact)
 }
-
 func (h *ContactHandler) DeleteContacByUsernametHandler(c echo.Context) error {
 	userId := c.Get("id").(string)
 
@@ -147,7 +144,6 @@ func (h *ContactHandler) DeleteContacByUsernametHandler(c echo.Context) error {
 
 	return nil
 }
-
 func (h *ContactHandler) CreateContactHandler(c echo.Context) error {
 	userId := c.Get("id").(string)
 
@@ -179,7 +175,6 @@ func (h *ContactHandler) CreateContactHandler(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, contact)
 }
-
 func (h *ContactHandler) ListContactsHandler(c echo.Context) error {
 	userId := c.Get("id").(string)
 
@@ -204,7 +199,6 @@ func (h *ContactHandler) ListContactsHandler(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, contactList)
 }
-
 func (h *ContactHandler) FindContactHandler(c echo.Context) error {
 	userId := c.Get("id").(string)
 
@@ -234,7 +228,6 @@ func (h *ContactHandler) FindContactHandler(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, contact)
 }
-
 func (h *ContactHandler) UpdateContactHandler(c echo.Context) error {
 	userId := c.Get("id").(string)
 
@@ -272,7 +265,6 @@ func (h *ContactHandler) UpdateContactHandler(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, contact)
 }
-
 func (h *ContactHandler) DeleteContactHandler(c echo.Context) error {
 	userId := c.Get("id").(string)
 
