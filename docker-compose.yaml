@@ -13,7 +13,16 @@ services:
     environment:
       - RABBITMQ_USER=${RABBITMQ_USER}
       - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
-
+  redis:
+    container_name: redis
+    restart: always
+    image: redis:latest
+    expose:
+      - ${REDIS_PORT}
+    volumes:
+      - ./redis_data:/data
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
   pgdb:
     container_name: pgdb
     restart: always
@@ -37,3 +46,6 @@ services:
       - ${PORT}:${PORT}
     depends_on:
       - pgdb
+
+networks:
+  main:
