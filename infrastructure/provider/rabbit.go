@@ -16,9 +16,9 @@ type RabbitQueue struct {
 
 func newRabbitConnection() (*amqp.Connection, error) {
 	host := os.Getenv("RABBIT_HOST")
-	port := os.Getenv("RABBIT_PORT")
-	user := os.Getenv("RABBIT_USER")
-	password := os.Getenv("RABBIT_PASS")
+	port := os.Getenv("RABBITMQ_PORT")
+	user := os.Getenv("RABBITMQ_USER")
+	password := os.Getenv("RABBITMQ_PASSWORD")
 
 	connectionString := fmt.Sprintf("amqp://%s:%s@%s:%s/", user, password, host, port)
 	connection, err := amqp.Dial(connectionString)

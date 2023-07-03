@@ -5,9 +5,9 @@ import (
 )
 
 type Message struct {
-	Sender    string      `json:"sender"`
-	Receivers interface{} `json:"receivers"`
-	Content   string      `json:"content"`
+	Sender    string   `json:"sender"`
+	Receivers []string `json:"receivers"`
+	Content   string   `json:"content"`
 }
 
 func NewSMSProvider() *KavenegarProvider {

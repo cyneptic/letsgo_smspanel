@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-func (q *RabbitQueue) Publisher(sender, msg string, receivers interface{}) {
+func (q *RabbitQueue) Publisher(sender, msg string, receivers []string) {
 	ch, err := q.con.Channel()
 	if err != nil {
 		panic(err)

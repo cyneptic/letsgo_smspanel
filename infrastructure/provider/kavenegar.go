@@ -23,16 +23,10 @@ func (s *KavenegarProvider) makeReceivers(receiver []string) string {
 
 }
 
-func (s *KavenegarProvider) SendMessage(sender, msg string, receivers interface{}) (isSuccessful bool) {
-	var receiverNumbers string
-	switch receivers.(type) {
-	case string:
-		receiverNumbers = receivers.(string)
-	case []string:
-		receiverNumbers = s.makeReceivers(receivers.([]string))
-	default:
-		return false
-	}
+func (s *KavenegarProvider) SendMessage(sender, msg string, receivers []string) (isSuccessful bool) {
+
+	receiverNumbers := s.makeReceivers(receivers)
+
 	response, _ := http.Get(s.makeRequestUrl(sender, receiverNumbers, msg))
 
 	return response.StatusCode == http.StatusOK
