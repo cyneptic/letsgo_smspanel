@@ -1,6 +1,9 @@
 package ports
 
-import "github.com/cyneptic/letsgo-smspanel/internal/core/entities"
+import (
+	"github.com/cyneptic/letsgo-smspanel/internal/core/entities"
+	"github.com/google/uuid"
+)
 
 type PhoneBookServiceContract interface {
 	CreatePhoneBookList(phoneBookModel entities.PhoneBook) (entities.PhoneBook, error)
@@ -19,4 +22,11 @@ type ContactServiceContract interface {
 	GetContactById(contactModel entities.Contact) (entities.Contact, error)
 	UpdateContactById(contactModel entities.Contact) (entities.Contact, error)
 	DeleteContactById(contactModel entities.Contact) error
+}
+
+type AdminActionServiceContract interface {
+	EditSingleMessagePrice(userId uuid.UUID, price int) error
+	EditGroupMessagePrice(userId uuid.UUID, price int) error
+	DisableUserAccount(userId uuid.UUID, target uuid.UUID, toggle bool) error
+	GetUserHistory(userId uuid.UUID, target uuid.UUID) ([]entities.Message, error)
 }

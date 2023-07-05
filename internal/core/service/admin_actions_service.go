@@ -52,7 +52,7 @@ func (svc *AdminService) EditGroupMessagePrice(userId uuid.UUID, price int) erro
 	return nil
 }
 
-func (svc *AdminService) DisableUserAccount(userId uuid.UUID, target uuid.UUID) error {
+func (svc *AdminService) DisableUserAccount(userId uuid.UUID, target uuid.UUID, toggle bool) error {
 	if err := svc.IsAdmin(userId); err != nil {
 		return err
 	}
