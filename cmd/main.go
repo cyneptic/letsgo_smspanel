@@ -3,12 +3,19 @@ package main
 import (
 	"log"
 
-	"github.com/cyneptic/letsgo-smspanel/controller"
+	controllers "github.com/cyneptic/letsgo-smspanel/controller"
+	"github.com/cyneptic/letsgo-smspanel/controller/middleware"
 	"github.com/labstack/echo/v4"
 )
 
 func main() {
 	e := echo.New()
-	controller.AddSendSMSRouters(e)
-	log.Fatal(e.Start(":8080"))
+	e.Use(middleware.CustomLogger)
+	controllers.AddPhoneBookRoutes(e)
+	controllers.AddSendSMSRouters(e)
+	controllers.AddContactRoutes(e)
+
+	if err := e.Start(":8080"); err != nil {
+		log.Fatalf("Failed to start server: %v", err)
+	}
 }

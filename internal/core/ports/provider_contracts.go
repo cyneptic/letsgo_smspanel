@@ -1,5 +1,5 @@
 package ports
 
 type QueueContract interface {
-	Publisher(sender, message, recevier string)
+	Publisher(sender string, message string, recevier []string)
 }

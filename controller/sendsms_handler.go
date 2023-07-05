@@ -1,9 +1,10 @@
-package controller
+package controllers
 
 import (
 	"net/http"
 
-	"github.com/cyneptic/letsgo-smspanel/infrastructure/provider"
+	"github.com/cyneptic/letsgo-smspanel/controller/validators"
+	"github.com/cyneptic/letsgo-smspanel/internal/core/entities"
 	"github.com/cyneptic/letsgo-smspanel/internal/core/ports"
 	"github.com/cyneptic/letsgo-smspanel/internal/core/service"
 	"github.com/labstack/echo/v4"
@@ -14,8 +15,7 @@ type SendSMSHandler struct {
 }
 
 func NewSnedSMSHandler() *SendSMSHandler {
-	pv := provider.NewSendSMSProviderClient()
-	svc := service.NewSendSMSService(pv)
+	svc := service.NewSendSMSService()
 	return &SendSMSHandler{
 		svc: svc,
 	}
@@ -23,16 +23,86 @@ func NewSnedSMSHandler() *SendSMSHandler {
 
 func AddSendSMSRouters(e *echo.Echo) {
 	handler := NewSnedSMSHandler()
-	e.GET("/sendtocontactlist", handler.SendToContactListhandler)
+	e.POST("/sendcontactlist", handler.SendToContactListHandler)
+	e.POST("/senduser", handler.SendToUserHandler)
+	e.POST("/sendnumber", handler.SendToNumberHandler)
+	e.POST("/sendcontactlistinterval", handler.SendToContactListIntervalHandler)
+
 }
 
-func (h *SendSMSHandler) SendToContactListhandler(c echo.Context) error {
-	json_map := make(map[string]interface{})
-	err := c.Bind(&json_map)
+// !SendToContactListHandler
+func (h *SendSMSHandler) SendToContactListHandler(c echo.Context) error {
+	var jsonMessage entities.MessageReciver
+	err := c.Bind(&jsonMessage)
 	if err != nil {
 		return err
-	} else {
-		message := json_map["message"]
-		return c.JSON(http.StatusOK, message)
 	}
+	messageSample, err := validators.ValidatorReciveMessage(jsonMessage)
+	if err != nil {
+		return c.String(http.StatusBadRequest, err.Error())
+	}
+	err = h.svc.SendToContactList(messageSample)
+	if err != nil {
+		return c.String(http.StatusBadRequest, err.Error())
+	}
+	return c.String(http.StatusOK, "Fine")
+}
+
+// !SendToUserHandler
+func (h *SendSMSHandler) SendToUserHandler(c echo.Context) error {
+	var jsonMessage entities.MessageReciver
+	err := c.Bind(&jsonMessage)
+	if err != nil {
+		return err
+	}
+	messageSample, err := validators.ValidatorReciveMessage(jsonMessage)
+	if err != nil {
+		return c.String(http.StatusBadRequest, err.Error())
+	}
+	err = h.svc.SendToUser(messageSample)
+	if err != nil {
+		return c.String(http.StatusBadRequest, err.Error())
+	}
+	return c.String(http.StatusOK, "Fine")
+}
+
+func (h *SendSMSHandler) SendToNumberHandler(c echo.Context) error {
+	var jsonMessage entities.MessageReciver
+	err := c.Bind(&jsonMessage)
+	if err != nil {
+		return err
+	}
+	messageSample, err := validators.ValidatorReciveMessage(jsonMessage)
+	if err != nil {
+		return c.String(http.StatusBadRequest, err.Error())
+	}
+	err = h.svc.SendToNumber(messageSample)
+	if err != nil {
+		return c.String(http.StatusBadRequest, err.Error())
+	}
+	return c.String(http.StatusOK, "Fine")
+}
+
+// !SendToContactListIntervalHandler
+func (h *SendSMSHandler) SendToContactListIntervalHandler(c echo.Context) error {
+	var jsonMessage entities.MessageReciver
+	err := c.Bind(&jsonMessage)
+	if err != nil {
+		return c.String(http.StatusBadRequest, err.Error())
+	}
+	messageSample, err := validators.ValidatorReciveMessage(jsonMessage)
+	if err != nil {
+		return c.String(http.StatusBadRequest, err.Error())
+	}
+	t, err := validators.ValidateNumber(c.QueryParam("t"))
+	if err != nil {
+		return c.String(http.StatusBadRequest, err.Error())
+	}
+
+	err = h.svc.SendToContactListInterval(messageSample, t)
+	if err != nil {
+		return c.String(http.StatusBadRequest, err.Error())
+	}
+	return c.String(http.StatusOK, "Fine")
+
 }
