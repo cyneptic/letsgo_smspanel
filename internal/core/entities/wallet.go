@@ -4,6 +4,6 @@ import "github.com/google/uuid"
 
 type Wallet struct {
 	DBModel
-	UserID uuid.UUID `gorm:"type:uuid" json:"user_id"`
-	Credit int
+	UserID uuid.UUID `gorm:"type:uuid;unique" json:"user_id"`
+	Credit int `json:"credit"`
 }
