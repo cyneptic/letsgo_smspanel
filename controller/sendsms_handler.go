@@ -14,7 +14,7 @@ type SendSMSHandler struct {
 	svc ports.SendSMSServiceContract
 }
 
-func NewSnedSMSHandler() *SendSMSHandler {
+func NewSendSMSHandler() *SendSMSHandler {
 	svc := service.NewSendSMSService()
 	return &SendSMSHandler{
 		svc: svc,
@@ -22,11 +22,11 @@ func NewSnedSMSHandler() *SendSMSHandler {
 }
 
 func AddSendSMSRouters(e *echo.Echo) {
-	handler := NewSnedSMSHandler()
-	e.POST("/sendcontactlist", handler.SendToContactListHandler)
-	e.POST("/senduser", handler.SendToUserHandler)
-	e.POST("/sendnumber", handler.SendToNumberHandler)
-	e.POST("/sendcontactlistinterval", handler.SendToContactListIntervalHandler)
+	handler := NewSendSMSHandler()
+	e.POST("/send-contactlist", handler.SendToContactListHandler)
+	e.POST("/send-user", handler.SendToUserHandler)
+	e.POST("/send-number", handler.SendToNumberHandler)
+	e.POST("/send-contactlist-interval", handler.SendToContactListIntervalHandler)
 
 }
 
@@ -37,7 +37,7 @@ func (h *SendSMSHandler) SendToContactListHandler(c echo.Context) error {
 	if err != nil {
 		return err
 	}
-	messageSample, err := validators.ValidatorReciveMessage(jsonMessage)
+	messageSample, err := validators.ValidatorReceiveMessage(jsonMessage)
 	if err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
@@ -45,7 +45,7 @@ func (h *SendSMSHandler) SendToContactListHandler(c echo.Context) error {
 	if err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
-	return c.String(http.StatusOK, "Fine")
+	return c.String(http.StatusOK, "Done")
 }
 
 // !SendToUserHandler
@@ -55,7 +55,7 @@ func (h *SendSMSHandler) SendToUserHandler(c echo.Context) error {
 	if err != nil {
 		return err
 	}
-	messageSample, err := validators.ValidatorReciveMessage(jsonMessage)
+	messageSample, err := validators.ValidatorReceiveMessage(jsonMessage)
 	if err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
@@ -63,7 +63,7 @@ func (h *SendSMSHandler) SendToUserHandler(c echo.Context) error {
 	if err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
-	return c.String(http.StatusOK, "Fine")
+	return c.String(http.StatusOK, "Done")
 }
 
 func (h *SendSMSHandler) SendToNumberHandler(c echo.Context) error {
@@ -72,7 +72,7 @@ func (h *SendSMSHandler) SendToNumberHandler(c echo.Context) error {
 	if err != nil {
 		return err
 	}
-	messageSample, err := validators.ValidatorReciveMessage(jsonMessage)
+	messageSample, err := validators.ValidatorReceiveMessage(jsonMessage)
 	if err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
@@ -80,7 +80,7 @@ func (h *SendSMSHandler) SendToNumberHandler(c echo.Context) error {
 	if err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
-	return c.String(http.StatusOK, "Fine")
+	return c.String(http.StatusOK, "Done")
 }
 
 // !SendToContactListIntervalHandler
@@ -90,11 +90,11 @@ func (h *SendSMSHandler) SendToContactListIntervalHandler(c echo.Context) error 
 	if err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
-	messageSample, err := validators.ValidatorReciveMessage(jsonMessage)
+	messageSample, err := validators.ValidatorReceiveMessage(jsonMessage)
 	if err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
-	t, err := validators.ValidateNumber(c.QueryParam("t"))
+	t, err := validators.ValidateTimeDuration(c.QueryParam("t"))
 	if err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
@@ -103,6 +103,6 @@ func (h *SendSMSHandler) SendToContactListIntervalHandler(c echo.Context) error 
 	if err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
-	return c.String(http.StatusOK, "Fine")
+	return c.String(http.StatusOK, "Done")
 
 }

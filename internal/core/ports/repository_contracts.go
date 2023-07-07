@@ -6,7 +6,7 @@ import (
 )
 
 type SnedSMSRepositoryContract interface {
-	RequestContactList() ([]entities.Contact, error)
+	RequestContactList(id uuid.UUID) ([]entities.Contact, error)
 	RequestNumber(id uuid.UUID) (entities.Number, error)
 	RequestUser(id uuid.UUID) (entities.User, error)
 }

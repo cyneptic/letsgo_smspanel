@@ -27,5 +27,6 @@ require (
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/joho/godotenv v1.5.1 // indirect
 	github.com/labstack/echo/v4 v4.10.2 // indirect
+	github.com/rabbitmq/amqp091-go v1.8.1 // indirect
 	gorm.io/driver/postgres v1.5.2 // indirect
 )

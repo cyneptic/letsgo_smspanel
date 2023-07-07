@@ -11,12 +11,15 @@ import (
 
 type SendSMSService struct {
 	db ports.SnedSMSRepositoryContract
-	pv ports.QueueContract
+	pv ports.MessageProvider
 }
 
 func NewSendSMSService() *SendSMSService {
 	db := repositories.NewGormDatabase()
-	pv := provider.NewQueueConnection()
+	pv, err := provider.NewQueueConnection()
+	if err != nil {
+		panic(err)
+	}
 	return &SendSMSService{
 		db: db,
 		pv: pv,
@@ -25,7 +28,7 @@ func NewSendSMSService() *SendSMSService {
 
 // !SendToContactList
 func (svc *SendSMSService) SendToContactList(msg entities.Message) error {
-	dataContacts, err := svc.db.RequestContactList()
+	dataContacts, err := svc.db.RequestContactList(msg.UserID)
 	dataColloctionNumber := make([]string, 0)
 	if err != nil {
 		panic(err)
@@ -63,7 +66,7 @@ func (svc *SendSMSService) SendToUser(msg entities.Message) error {
 
 // !SendToContactListInterval
 func (svc *SendSMSService) SendToContactListInterval(msg entities.Message, interval time.Duration) error {
-	dataContacts, err := svc.db.RequestContactList()
+	dataContacts, err := svc.db.RequestContactList(msg.UserID)
 
 	dataColloctionNumber := make([]string, 0)
 	if err != nil {

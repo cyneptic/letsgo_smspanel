@@ -11,7 +11,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func ValidateNumber(p string) (time.Duration, error) {
+func ValidateTimeDuration(p string) (time.Duration, error) {
 
 	t1, err := strconv.ParseUint(p, 10, 64)
 	if err != nil {
@@ -23,7 +23,7 @@ func ValidateNumber(p string) (time.Duration, error) {
 	return t, nil
 }
 
-func ValidatorReciveMessage(msg entities.MessageReciver) (entities.Message, error) {
+func ValidatorReceiveMessage(msg entities.MessageReciver) (entities.Message, error) {
 	var result entities.Message
 	if msg.Content == "" {
 		return entities.Message{}, errors.New("content can't be empty")
