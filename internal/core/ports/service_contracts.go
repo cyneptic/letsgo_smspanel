@@ -20,3 +20,6 @@ type ContactServiceContract interface {
 	UpdateContactById(contactModel entities.Contact) (entities.Contact, error)
 	DeleteContactById(contactModel entities.Contact) error
 }
+
+type NumberServiceContract interface {
+}
