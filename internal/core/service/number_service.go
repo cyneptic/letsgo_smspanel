@@ -39,13 +39,13 @@ func (s *NumberService) GenerateNumber() (string, error) {
 	return "", errors.New("there is an error in server")
 
 }
-func (s *NumberService) BuyNumber(user string, number string) error {
+func (s *NumberService) BuyNumber(user string) error {
 	userID, _ := uuid.Parse(user)
-	numberID, _ := uuid.Parse(number)
-	if ok, err := s.db.IsNumberFree(number); err != nil || !ok {
+	number, err := s.GenerateNumber()
+	if err != nil {
 		return err
 	}
-	err := s.db.BuyANumber(userID, numberID)
+	err = s.db.BuyANumber(userID, number)
 	if err != nil {
 		return err
 	}

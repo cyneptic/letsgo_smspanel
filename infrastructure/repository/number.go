@@ -2,7 +2,7 @@ package repositories
 
 import "github.com/google/uuid"
 
-func (r *PGRepository) BuyANumber(userID, numberID uuid.UUID) error {
+func (r *PGRepository) BuyANumber(userID uuid.UUID, number string) error {
 	return nil
 }
 

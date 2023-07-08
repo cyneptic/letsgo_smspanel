@@ -25,7 +25,7 @@ type ContactRepositoryContract interface {
 }
 
 type NumberRepositoryContract interface {
-	BuyANumber(userID, numberID uuid.UUID) error
+	BuyANumber(userID uuid.UUID, number string) error
 	GetShareANumber() (string, error)
 	IsNumberFree(number string) (bool, error)
 	IsSubscribable(user, number string) (bool, error)
