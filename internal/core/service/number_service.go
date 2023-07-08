@@ -11,7 +11,7 @@ import (
 )
 
 type NumberService struct {
-	db ports.NumberServiceContract
+	db ports.NumberRepositoryContract
 }
 
 func NewNumberService() *NumberService {

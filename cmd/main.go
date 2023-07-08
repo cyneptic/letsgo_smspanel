@@ -18,6 +18,7 @@ func main() {
 	controllers.AddPhoneBookRoutes(e)
 	controllers.AddContactRoutes(e)
 	controllers.AddWalletHRoutes(e)
+	controllers.RegisterNumberHandler(e)
 	appPort := fmt.Sprintf(":%s", os.Getenv("PORT"))
 	if err := e.Start(appPort); err != nil {
 		log.Fatalf("Failed to start server: %v", err)
