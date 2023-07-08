@@ -3,5 +3,6 @@ package ports
 import "github.com/google/uuid"
 
 type AdminActionsProviderContract interface {
-	DisableUserAccount(userId uuid.UUID) error
+	DisableUserAccount(targetId uuid.UUID, toggle bool) error
+	IsAdmin(userid uuid.UUID) (bool, error)
 }

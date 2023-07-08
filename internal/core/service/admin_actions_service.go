@@ -1,6 +1,9 @@
 package service
 
 import (
+	"errors"
+
+	"github.com/cyneptic/letsgo-smspanel/infrastructure/client"
 	repositories "github.com/cyneptic/letsgo-smspanel/infrastructure/repository"
 	"github.com/cyneptic/letsgo-smspanel/internal/core/entities"
 	"github.com/cyneptic/letsgo-smspanel/internal/core/ports"
@@ -14,15 +17,23 @@ type AdminService struct {
 
 func NewAdminService() *AdminService {
 	db := repositories.NewGormDatabase()
-	// define pv
+	pv := client.NewAdminActionClient()
 	return &AdminService{
 		db: db,
-		// set pv
+		pv: pv,
 	}
 }
 
 func (svc *AdminService) IsAdmin(userId uuid.UUID) error {
-	// to implement with provider
+	bool, err := svc.pv.IsAdmin(userId)
+	if err != nil {
+		return err
+	}
+
+	if !bool {
+		return errors.New("You are not allowed to do this!")
+	}
+
 	return nil
 }
 
@@ -57,7 +68,7 @@ func (svc *AdminService) DisableUserAccount(userId uuid.UUID, target uuid.UUID, 
 		return err
 	}
 
-	err := svc.pv.DisableUserAccount(target)
+	err := svc.pv.DisableUserAccount(target, toggle)
 	if err != nil {
 		return err
 	}
