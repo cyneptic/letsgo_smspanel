@@ -6,6 +6,11 @@ import (
 	"github.com/cyneptic/letsgo-smspanel/internal/core/entities"
 )
 
+type TemplateContract interface {
+	CreateTemplate(temp entities.Template) error
+	CreateTemplateContent(temp entities.Template) error
+}
+
 type SendSMSServiceContract interface {
 	SendToContactList(msg entities.Message) error
 	SendToNumber(msg entities.Message) error
