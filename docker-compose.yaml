@@ -1,0 +1,51 @@
+version: "3"
+
+services:
+  rabbit:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    expose:
+      - ${RABBITMQ_PORT}
+      - ${RABBITMQ_MANAGEMENT_PORT}
+    volumes:
+      - "~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/"
+      - "~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq"
+    environment:
+      - RABBITMQ_USER=${RABBITMQ_USER}
+      - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
+  redis:
+    container_name: redis
+    restart: always
+    image: redis:latest
+    expose:
+      - ${REDIS_PORT}
+    volumes:
+      - ./redis_data:/data
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+  pgdb:
+    container_name: pgdb
+    restart: always
+    image: postgres:latest
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    expose:
+      - ${POSTGRES_PORT}
+
+  web:
+    container_name: web
+    restart: always
+    build: .
+    volumes:
+      - .:/code
+    ports:
+      - ${PORT}:${PORT}
+    depends_on:
+      - pgdb
+
+networks:
+  main:
