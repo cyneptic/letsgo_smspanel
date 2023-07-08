@@ -21,10 +21,23 @@ func NewNumberService() *NumberService {
 	}
 }
 
-func (s *NumberService) GenerateNumber() string {
+func (s *NumberService) GenerateNumber() (string, error) {
 	rand.Seed(time.Now().UnixNano())
-	randomNumber := "1000" + fmt.Sprintf("%07d", rand.Intn(10000000))
-	return randomNumber
+	numberPrefix := []string{
+		"1000",
+		"2000",
+		"3000",
+		"4000",
+		"5000",
+	}
+	for i := 0; i < 10; i++ {
+		randomNumber := numberPrefix[rand.Intn(len(numberPrefix))] + fmt.Sprintf("%07d", rand.Intn(10000000))
+		if !s.db.IsReserved(randomNumber) {
+			return randomNumber, nil
+		}
+	}
+	return "", errors.New("there is an error in server")
+
 }
 func (s *NumberService) BuyNumber(user string, number string) error {
 	userID, _ := uuid.Parse(user)

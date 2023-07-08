@@ -24,7 +24,7 @@ type ContactServiceContract interface {
 }
 
 type NumberServiceContract interface {
-	GenerateNumber() string
+	GenerateNumber() (string, error)
 	BuyNumber(user string, number string) error
 	SubscribeNumber(user, number string) error
 	GetSharedNumber() (string, error)

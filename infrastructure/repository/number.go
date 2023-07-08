@@ -19,3 +19,7 @@ func (r *PGRepository) IsSubscribable(user, number string) (bool, error) {
 func (r *PGRepository) SubscribeMe(user, number string) {
 
 }
+
+func (r *PGRepository) IsReserved(randomNumber string) bool {
+	return false
+}

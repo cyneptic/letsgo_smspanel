@@ -29,5 +29,6 @@ type NumberRepositoryContract interface {
 	GetShareANumber() (string, error)
 	IsNumberFree(number string) (bool, error)
 	IsSubscribable(user, number string) (bool, error)
+	IsReserved(randomNumber string) bool
 	SubscribeMe(user, number string)
 }
