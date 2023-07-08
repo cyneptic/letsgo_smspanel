@@ -1,6 +1,9 @@
 package ports
 
-import "github.com/cyneptic/letsgo-smspanel/internal/core/entities"
+import (
+	"github.com/cyneptic/letsgo-smspanel/internal/core/entities"
+	"github.com/google/uuid"
+)
 
 type PhoneBookServiceContract interface {
 	CreatePhoneBookList(phoneBookModel entities.PhoneBook) (entities.PhoneBook, error)
@@ -22,4 +25,9 @@ type ContactServiceContract interface {
 }
 
 type NumberServiceContract interface {
+	BuyANumber(userID, numberID uuid.UUID) error
+	GetShareANumber() (string, error)
+	IsNumberFree(number string) (bool, error)
+	IsSubscribable(user, number string) (bool, error)
+	SubscribeMe(user, number string)
 }
