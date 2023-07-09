@@ -23,9 +23,10 @@ func NewTemplateHandler() *TemplateHandler {
 func AddTemplateRoutes(e *echo.Echo) {
 	handler := NewTemplateHandler()
 	e.POST("/create-temp", handler.CreateTemplateHandler)
-	e.POST("/create-temp-content", handler.CreateTemplateContentHandler)
+	e.POST("/create-temp-content", handler.GenerateTemplateHandler)
 }
 
+// !Creating Template
 func (h *TemplateHandler) CreateTemplateHandler(c echo.Context) error {
 	var jsonTemp entities.Template
 	err := c.Bind(&jsonTemp)
@@ -38,6 +39,20 @@ func (h *TemplateHandler) CreateTemplateHandler(c echo.Context) error {
 	}
 	return c.JSON(http.StatusOK, jsonTemp)
 }
-func (h *TemplateHandler) CreateTemplateContentHandler(c echo.Context) error {
-	return nil
+
+func (h *TemplateHandler) GenerateTemplateHandler(c echo.Context) error {
+	tempName := c.QueryParam("tempName")
+	content, mapTemp, err := h.svc.GetTemplateMapContent(tempName)
+	if err != nil {
+		return c.String(http.StatusBadRequest, err.Error())
+	}
+	err = c.Bind(&mapTemp)
+	if err != nil {
+		return c.String(http.StatusBadRequest, err.Error())
+	}
+	str, err := h.svc.GenerateTemplate(content, mapTemp)
+	if err != nil {
+		return c.String(http.StatusBadRequest, err.Error())
+	}
+	return c.String(http.StatusOK, str)
 }

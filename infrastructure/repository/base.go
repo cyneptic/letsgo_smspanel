@@ -22,9 +22,9 @@ func NewGormDatabase() *PGRepository {
 }
 
 func GormInit() (*gorm.DB, error) {
-	err := godotenv.Load()
+	err := godotenv.Load("../.env")
 	if err != nil {
-		log.Printf("Error loading .env file: %v", err)
+		panic("Error loading .env file")
 	}
 
 	host := os.Getenv("DATABASE_HOST")
@@ -32,14 +32,13 @@ func GormInit() (*gorm.DB, error) {
 	password := os.Getenv("DATABASE_PASSWORD")
 	dbName := os.Getenv("DATABASE_NAME")
 	port, _ := strconv.Atoi(os.Getenv("DATABASE_PORT"))
-
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=disable TimeZone=Asia/Jakarta", host, user, password, dbName, port)
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Printf("Failed to connect to database: %v", err)
 		return nil, err
 	}
-	err = db.AutoMigrate(&entities.Contact{}, &entities.Message{}, &entities.Number{}, &entities.PhoneBook{}, &entities.Transaction{}, &entities.User{}, &entities.Wallet{})
+	err = db.AutoMigrate(&entities.Contact{}, &entities.Message{}, &entities.Number{}, &entities.PhoneBook{}, &entities.Transaction{}, &entities.User{}, &entities.Wallet{}, &entities.Template{})
 	if err != nil {
 		return nil, err
 	}
