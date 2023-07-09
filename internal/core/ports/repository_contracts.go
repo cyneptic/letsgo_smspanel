@@ -26,9 +26,9 @@ type ContactRepositoryContract interface {
 
 type NumberRepositoryContract interface {
 	BuyANumber(userID uuid.UUID, number string) error
-	GetShareANumber() (string, error)
+	GetSharedANumber() ([]entities.Number, error)
 	IsNumberFree(number string) (bool, error)
-	IsSubscribable(user, number string) (bool, error)
+	IsSubscribable(user uuid.UUID, number string) (bool, error)
 	IsReserved(randomNumber string) bool
-	SubscribeMe(user, number string)
+	SubscribeMe(user uuid.UUID, number string) error
 }

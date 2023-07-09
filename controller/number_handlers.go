@@ -21,18 +21,34 @@ func NewNumberHandler() *NumberHandler {
 func RegisterNumberHandler(ctx *echo.Echo) {
 	handler := NewNumberHandler()
 	numberGroup := ctx.Group("/api/number")
-	numberGroup.GET("/generate", handler.GenerateNewNumber)
 	numberGroup.GET("/buy", handler.BuyNumber)
+	numberGroup.GET("/shared-number", handler.GetSharedNumber)
+	numberGroup.GET("/subscribe", handler.SubscribeNumber)
 
-}
-
-func (h *NumberHandler) GenerateNewNumber(c echo.Context) error {
-	generatedNumber, _ := h.srv.GenerateNumber()
-	return c.String(http.StatusOK, generatedNumber)
 }
 
 func (h *NumberHandler) BuyNumber(c echo.Context) error {
 	generatedNumber, _ := h.srv.GenerateNumber()
-	h.srv.BuyNumber(uuid.New().String())
+	err := h.srv.BuyNumber(uuid.New().String())
+	if err != nil {
+		return err
+	}
 	return c.String(http.StatusOK, generatedNumber)
+}
+
+func (h *NumberHandler) GetSharedNumber(c echo.Context) error {
+	shared, _ := h.srv.GetSharedNumber()
+	return c.JSON(http.StatusOK, shared)
+}
+
+func (h *NumberHandler) SubscribeNumber(c echo.Context) error {
+	generatedNumber, _ := h.srv.GenerateNumber()
+
+	userId := c.Get("id").(string)
+
+	err := h.srv.SubscribeNumber(userId, generatedNumber)
+	if err != nil {
+		return err
+	}
+	return c.String(http.StatusOK, "success")
 }

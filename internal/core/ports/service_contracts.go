@@ -27,5 +27,5 @@ type NumberServiceContract interface {
 	GenerateNumber() (string, error)
 	BuyNumber(user string) error
 	SubscribeNumber(user, number string) error
-	GetSharedNumber() (string, error)
+	GetSharedNumber() ([]string, error)
 }

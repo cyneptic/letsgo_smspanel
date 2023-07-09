@@ -40,7 +40,10 @@ func (s *NumberService) GenerateNumber() (string, error) {
 
 }
 func (s *NumberService) BuyNumber(user string) error {
-	userID, _ := uuid.Parse(user)
+	userID, err := uuid.Parse(user)
+	if err != nil {
+		return errors.New("invalid user id")
+	}
 	number, err := s.GenerateNumber()
 	if err != nil {
 		return err
@@ -52,16 +55,29 @@ func (s *NumberService) BuyNumber(user string) error {
 	return nil
 }
 func (s *NumberService) SubscribeNumber(user, number string) error {
-	if ok, err := s.db.IsSubscribable(user, number); err != nil || !ok {
-		return err
+	userId, err := uuid.Parse(user)
+	if err != nil {
+		return errors.New("invalid user id")
 	}
-	s.db.SubscribeMe(user, number)
+
+	if ok, err := s.db.IsSubscribable(userId, number); err != nil || !ok {
+		return errors.New("user already subscribed to this number")
+	}
+
+	err = s.db.SubscribeMe(userId, number)
+	if err != nil {
+		return errors.New("there is an error in subscribing")
+	}
 	return nil
 }
-func (s *NumberService) GetSharedNumber() (string, error) {
-	number, err := s.db.GetShareANumber()
+func (s *NumberService) GetSharedNumber() ([]string, error) {
+	sharedNumbers, err := s.db.GetSharedANumber()
 	if err != nil {
-		return "", errors.New("there is no shared number")
+		return []string{}, errors.New("there is no shared number")
 	}
-	return number, nil
+	shared := make([]string, 0, len(sharedNumbers))
+	for _, number := range sharedNumbers {
+		shared = append(shared, number.No)
+	}
+	return shared, nil
 }

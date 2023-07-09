@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	_ = godotenv.Load()
+	_ = godotenv.Load(".env")
 	e := echo.New()
 	e.Use(middleware.CustomLogger)
 	controllers.AddPhoneBookRoutes(e)
