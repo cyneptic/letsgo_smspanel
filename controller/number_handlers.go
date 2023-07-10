@@ -1,9 +1,10 @@
 package controllers
 
 import (
+	"errors"
+	"github.com/cyneptic/letsgo-smspanel/controller/validators"
 	"github.com/cyneptic/letsgo-smspanel/internal/core/ports"
 	"github.com/cyneptic/letsgo-smspanel/internal/core/service"
-	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"net/http"
 )
@@ -28,25 +29,39 @@ func RegisterNumberHandler(ctx *echo.Echo) {
 }
 
 func (h *NumberHandler) BuyNumber(c echo.Context) error {
+	ok, id := validators.UUIDValidation(c.Get("id").(string))
+	if !ok {
+		return errors.New("invalid user id")
+	}
 	generatedNumber, _ := h.srv.GenerateNumber()
-	err := h.srv.BuyNumber(uuid.New().String())
+	err := h.srv.BuyNumber(id, generatedNumber)
 	if err != nil {
 		return err
 	}
-	return c.String(http.StatusOK, generatedNumber)
+	return c.JSON(http.StatusCreated, echo.Map{
+		"number": generatedNumber,
+	},
+	)
 }
 
 func (h *NumberHandler) GetSharedNumber(c echo.Context) error {
 	shared, _ := h.srv.GetSharedNumber()
-	return c.JSON(http.StatusOK, shared)
+	return c.JSON(http.StatusOK, echo.Map{
+		"shared_numbers": shared,
+	},
+	)
 }
 
 func (h *NumberHandler) SubscribeNumber(c echo.Context) error {
-	generatedNumber, _ := h.srv.GenerateNumber()
-
-	userId := c.Get("id").(string)
-
-	err := h.srv.SubscribeNumber(userId, generatedNumber)
+	ok, id := validators.UUIDValidation(c.Get("id").(string))
+	if !ok {
+		return errors.New("invalid user id")
+	}
+	generatedNumber, err := h.srv.GenerateNumber()
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError)
+	}
+	err = h.srv.SubscribeNumber(id, generatedNumber)
 	if err != nil {
 		return err
 	}

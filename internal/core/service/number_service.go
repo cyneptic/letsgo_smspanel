@@ -32,39 +32,25 @@ func (s *NumberService) GenerateNumber() (string, error) {
 	}
 	for i := 0; i < 10; i++ {
 		randomNumber := numberPrefix[rand.Intn(len(numberPrefix))] + fmt.Sprintf("%07d", rand.Intn(10000000))
-		if !s.db.IsReserved(randomNumber) {
+		if exists, err := s.db.IsReserved(randomNumber); !exists && err == nil {
 			return randomNumber, nil
 		}
 	}
 	return "", errors.New("there is an error in server")
 
 }
-func (s *NumberService) BuyNumber(user string) error {
-	userID, err := uuid.Parse(user)
-	if err != nil {
-		return errors.New("invalid user id")
-	}
-	number, err := s.GenerateNumber()
-	if err != nil {
-		return err
-	}
-	err = s.db.BuyANumber(userID, number)
+func (s *NumberService) BuyNumber(user uuid.UUID, number string) error {
+	err := s.db.BuyANumber(user, number)
 	if err != nil {
 		return err
 	}
 	return nil
 }
-func (s *NumberService) SubscribeNumber(user, number string) error {
-	userId, err := uuid.Parse(user)
-	if err != nil {
-		return errors.New("invalid user id")
-	}
-
-	if ok, err := s.db.IsSubscribable(userId, number); err != nil || !ok {
+func (s *NumberService) SubscribeNumber(user uuid.UUID, number string) error {
+	if ok, err := s.db.IsReserved(number); err != nil || !ok {
 		return errors.New("user already subscribed to this number")
 	}
-
-	err = s.db.SubscribeMe(userId, number)
+	err := s.db.SubscribeMe(user, number)
 	if err != nil {
 		return errors.New("there is an error in subscribing")
 	}
