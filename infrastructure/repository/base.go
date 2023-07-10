@@ -39,7 +39,7 @@ func GormInit() (*gorm.DB, error) {
 		log.Printf("Failed to connect to database: %v", err)
 		return nil, err
 	}
-	err = db.AutoMigrate(&entities.Contact{}, &entities.Message{}, &entities.Number{}, &entities.PhoneBook{}, &entities.Transaction{}, &entities.User{}, &entities.Wallet{})
+	err = db.AutoMigrate(&entities.Contact{}, &entities.BlacklistRegex{}, &entities.BlacklistWord{}, &entities.Message{}, &entities.Number{}, &entities.PhoneBook{}, &entities.Transaction{}, &entities.User{}, &entities.Wallet{})
 	if err != nil {
 		return nil, err
 	}
