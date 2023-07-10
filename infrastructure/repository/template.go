@@ -19,7 +19,7 @@ func (pc *PGRepository) GetTemplate(tempname string) (entities.Template, error) 
 	var temp entities.Template
 	res := pc.DB.Where("tempname=?", tempname).First(&temp)
 	if res.Error != nil {
-		panic("Can't Found Template By Name")
+		return entities.Template{}, res.Error
 	}
 	return temp, nil
 
