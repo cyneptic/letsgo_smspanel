@@ -46,6 +46,102 @@ func AddAdminActionRoutes(e *echo.Echo) {
 	e.POST("/edit-group-price", handler.EditGroupMessagePrice)
 	e.POST("/disable-user", handler.DisableUserAccount)
 	e.POST("/get-user-history", handler.GetUserHistory)
+	e.GET("/search-messages", handler.SearchAllMessages)
+	e.PUT("/blacklist-word", handler.AddBlacklistWord)
+	e.DELETE("/blacklist-word", handler.RemoveBlacklistWord)
+	e.PUT("/blacklist-regex", handler.AddBlacklistRegex)
+	e.DELETE("/blacklist-regex", handler.RemoveBlacklistRegex)
+}
+
+func (h *AdminActionHandler) SearchAllMessages(c echo.Context) error {
+	userid, query := c.QueryParam("user_id"), c.QueryParam("query")
+	err := h.validator.VerifyUUID(userid)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, "Invalid Parameters")
+	}
+
+	uid, _ := uuid.Parse(userid)
+	messages, err := h.svc.SearchAllMessages(uid, query)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err)
+	}
+
+	return c.JSON(http.StatusOK, messages)
+
+}
+
+func (h *AdminActionHandler) AddBlacklistRegex(c echo.Context) error {
+	userid, regex := c.QueryParam("user_id"), c.QueryParam("regex")
+	err := h.validator.VerifyUUID(userid)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, "Invalid Parameters")
+	}
+
+	err = h.validator.ValidateRegex(regex)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, "Invalid Parameters")
+	}
+
+	uid, _ := uuid.Parse(userid)
+	err = h.svc.RemoveBlacklistRegex(uid, regex)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err)
+	}
+
+	return c.JSON(http.StatusOK, nil)
+}
+
+func (h *AdminActionHandler) RemoveBlacklistRegex(c echo.Context) error {
+	userid, regex := c.QueryParam("user_id"), c.QueryParam("regex")
+	err := h.validator.VerifyUUID(userid)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, "Invalid Parameters")
+	}
+
+	err = h.validator.ValidateRegex(regex)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, "Invalid Parameters")
+	}
+
+	uid, _ := uuid.Parse(userid)
+	err = h.svc.RemoveBlacklistRegex(uid, regex)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err)
+	}
+
+	return c.JSON(http.StatusOK, nil)
+}
+
+func (h *AdminActionHandler) RemoveBlacklistWord(c echo.Context) error {
+	userid, word := c.QueryParam("user_id"), c.QueryParam("word")
+	err := h.validator.VerifyUUID(userid)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, "Invalid Parameters")
+	}
+
+	uid, _ := uuid.Parse(userid)
+	err = h.svc.RemoveBlacklistWord(uid, word)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err)
+	}
+
+	return c.JSON(http.StatusOK, nil)
+}
+
+func (h *AdminActionHandler) AddBlacklistWord(c echo.Context) error {
+	userid, word := c.QueryParam("user_id"), c.QueryParam("word")
+	err := h.validator.VerifyUUID(userid)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, "Invalid Parameters")
+	}
+
+	uid, _ := uuid.Parse(userid)
+	err = h.svc.AddBlacklistWord(uid, word)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err)
+	}
+
+	return c.JSON(http.StatusOK, nil)
 }
 
 func (h *AdminActionHandler) EditSingleMessagePrice(c echo.Context) error {

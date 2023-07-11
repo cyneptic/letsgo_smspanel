@@ -29,4 +29,9 @@ type AdminActionServiceContract interface {
 	EditGroupMessagePrice(userId uuid.UUID, price int) error
 	DisableUserAccount(userId uuid.UUID, target uuid.UUID, toggle bool) error
 	GetUserHistory(userId uuid.UUID, target uuid.UUID) ([]entities.Message, error)
+	SearchAllMessages(userid uuid.UUID, query string) ([]entities.Message, error)
+	AddBlacklistWord(userid uuid.UUID, word string) error
+	RemoveBlacklistWord(userid uuid.UUID, word string) error
+	AddBlacklistRegex(userid uuid.UUID, regex string) error
+	RemoveBlacklistRegex(userid uuid.UUID, regex string) error
 }

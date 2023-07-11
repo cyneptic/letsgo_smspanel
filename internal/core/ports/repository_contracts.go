@@ -28,4 +28,9 @@ type AdminActionsRepositoryContract interface {
 	EditSingleMessagePrice(amount int) error
 	EditGroupMessagePrice(amount int) error
 	GetUserHistory(uId uuid.UUID) ([]entities.Message, error)
+	SearchAllMessages(query string) ([]entities.Message, error)
+	AddBlacklistWord(word string) error
+	RemoveBlacklistWord(word string) error
+	AddBlacklistRegex(regex string) error
+	RemoveBlacklistRegex(regex string) error
 }

@@ -29,3 +29,50 @@ func (db *PGRepository) GetUserHistory(uId uuid.UUID) ([]entities.Message, error
 
 	return history, nil
 }
+
+func (db *PGRepository) SearchAllMessages(query string) ([]entities.Message, error) {
+	var result []entities.Message
+	if err := db.DB.Model(&entities.Message{}).Where("content LIKE ?", "%"+query+"%").Find(&result).Error; err != nil {
+		return []entities.Message{}, err
+	}
+
+	return result, nil
+}
+
+func (db *PGRepository) AddBlacklistWord(word string) error {
+	q := entities.BlacklistWord{
+		Word: word,
+	}
+	if err := db.DB.Create(&q).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (db *PGRepository) RemoveBlacklistWord(word string) error {
+	if err := db.DB.Delete(&entities.BlacklistWord{}, "word = ?", word).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (db *PGRepository) AddBlacklistRegex(regex string) error {
+	q := entities.BlacklistRegex{
+		Expression: regex,
+	}
+	if err := db.DB.Create(&q).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (db *PGRepository) RemoveBlacklistRegex(regex string) error {
+	if err := db.DB.Delete(&entities.BlacklistRegex{}, "expression = ?", regex).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
