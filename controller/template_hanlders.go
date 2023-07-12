@@ -3,6 +3,7 @@ package controllers
 import (
 	"net/http"
 
+	"github.com/cyneptic/letsgo-smspanel/controller/validators"
 	"github.com/cyneptic/letsgo-smspanel/internal/core/entities"
 	"github.com/cyneptic/letsgo-smspanel/internal/core/ports"
 	"github.com/cyneptic/letsgo-smspanel/internal/core/service"
@@ -24,12 +25,17 @@ func AddTemplateRoutes(e *echo.Echo) {
 	handler := NewTemplateHandler()
 	e.POST("/create-temp", handler.CreateTemplateHandler)
 	e.POST("/create-temp-content", handler.GenerateTemplateHandler)
+	e.GET("/get-temps", handler.GetAllTemplatesHandler)
 }
 
 // !Creating Template
 func (h *TemplateHandler) CreateTemplateHandler(c echo.Context) error {
 	var jsonTemp entities.Template
 	err := c.Bind(&jsonTemp)
+	if err != nil {
+		return c.String(http.StatusBadRequest, err.Error())
+	}
+	err = validators.ValidateTemplate(jsonTemp)
 	if err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
@@ -55,4 +61,14 @@ func (h *TemplateHandler) GenerateTemplateHandler(c echo.Context) error {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
 	return c.String(http.StatusOK, str)
+}
+
+func (h *TemplateHandler) GetAllTemplatesHandler(c echo.Context) error {
+
+	data, err := h.svc.GetAllTemplates()
+	if err != nil {
+		return c.String(http.StatusBadRequest, err.Error())
+	}
+	return c.JSON(http.StatusOK, data)
+
 }

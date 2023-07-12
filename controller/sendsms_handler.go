@@ -22,11 +22,11 @@ func NewSendSMSHandler() *SendSMSHandler {
 }
 
 func AddSendSMSRouters(e *echo.Echo) {
-	// handler := NewSendSMSHandler()
-	// e.POST("/send-contactlist", handler.SendToContactListHandler)
-	// e.POST("/send-user", handler.SendToUserHandler)
-	// e.POST("/send-number", handler.SendToNumberHandler)
-	// e.POST("/send-contactlist-interval", handler.SendToContactListIntervalHandler)
+	handler := NewSendSMSHandler()
+	e.POST("/send-contactlist", handler.SendToContactListHandler)
+	e.POST("/send-user", handler.SendToUserHandler)
+	e.POST("/send-number", handler.SendToNumberHandler)
+	e.POST("/send-contactlist-interval", handler.SendToContactListIntervalHandler)
 
 }
 

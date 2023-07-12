@@ -53,3 +53,11 @@ func (svc *TemplateService) GenerateTemplate(content string, tempMap map[string]
 	}
 	return content, nil
 }
+
+func (svc *TemplateService) GetAllTemplates() ([]entities.Template, error) {
+	templates, err := svc.db.AllTemplates()
+	if err != nil {
+		return templates, err
+	}
+	return templates, err
+}

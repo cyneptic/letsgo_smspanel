@@ -10,6 +10,7 @@ type TemplateContract interface {
 	CreateTemplate(temp entities.Template) error
 	GetTemplateMapContent(tempName string) (string, map[string]string, error)
 	GenerateTemplate(content string, temp map[string]string) (string, error)
+	GetAllTemplates() ([]entities.Template, error)
 }
 
 type SendSMSServiceContract interface {

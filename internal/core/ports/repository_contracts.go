@@ -8,6 +8,7 @@ import (
 type TemplateRepositoryContract interface {
 	AddTemplate(temp entities.Template) error
 	GetTemplate(tempname string) (entities.Template, error)
+	AllTemplates() ([]entities.Template, error)
 }
 
 type SnedSMSRepositoryContract interface {

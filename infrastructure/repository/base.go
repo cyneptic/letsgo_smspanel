@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"regexp"
 	"strconv"
 
 	"github.com/cyneptic/letsgo-smspanel/internal/core/entities"
@@ -21,12 +22,21 @@ func NewGormDatabase() *PGRepository {
 	return &PGRepository{DB: db}
 }
 
-func GormInit() (*gorm.DB, error) {
-	err := godotenv.Load("../.env")
-	if err != nil {
-		panic("Error loading .env file")
-	}
+func loadEnv() {
+	const projectDirName = "letsgo_smspanel"
+	projectName := regexp.MustCompile(`^(.*` + projectDirName + `)`)
+	currentWorkDirectory, _ := os.Getwd()
+	rootPath := projectName.Find([]byte(currentWorkDirectory))
 
+	err := godotenv.Load(string(rootPath) + `/.env`)
+
+	if err != nil {
+		log.Fatalf("Error loading .env file")
+	}
+}
+
+func GormInit() (*gorm.DB, error) {
+	loadEnv()
 	host := os.Getenv("DATABASE_HOST")
 	user := os.Getenv("DATABASE_USER")
 	password := os.Getenv("DATABASE_PASSWORD")
