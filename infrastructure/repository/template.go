@@ -6,9 +6,11 @@ import (
 )
 
 func (pc *PGRepository) AddTemplate(temp entities.Template) error {
-	t := entities.Template{ID: uuid.New(),
+	t := entities.Template{
+		ID:       uuid.New(),
 		TempName: temp.TempName,
-		Content:  temp.Content}
+		Content:  temp.Content,
+	}
 	res := pc.DB.Create(&t)
 	if res.Error != nil {
 		return res.Error

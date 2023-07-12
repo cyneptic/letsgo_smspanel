@@ -47,6 +47,10 @@ func (h *TemplateHandler) CreateTemplateHandler(c echo.Context) error {
 }
 
 func (h *TemplateHandler) GenerateTemplateHandler(c echo.Context) error {
+	err := validators.ValidateTempName(c.QueryParams())
+	if err != nil {
+		return c.String(http.StatusBadRequest, err.Error())
+	}
 	tempName := c.QueryParam("tempName")
 	content, mapTemp, err := h.svc.GetTemplateMapContent(tempName)
 	if err != nil {
