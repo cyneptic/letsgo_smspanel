@@ -21,7 +21,7 @@ type SendSMSServiceContract interface {
 }
 
 type PhoneBookServiceContract interface {
-	CreatePhoneBookList(phoneBookModel entities.PhoneBook) (entities.PhoneBook, error)
+	CreatePhoneBook(phoneBookModel entities.PhoneBook) (entities.PhoneBook, error)
 	GetPhoneBookList(phoneBookModel entities.PhoneBook) ([]entities.PhoneBook, error)
 	GetPhoneBookById(phoneBookModel entities.PhoneBook) (entities.PhoneBook, error)
 	UpdatePhoneBookById(phoneBookModel entities.PhoneBook) (entities.PhoneBook, error)
