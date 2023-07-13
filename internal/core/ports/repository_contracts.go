@@ -29,4 +29,5 @@ type NumberRepositoryContract interface {
 	GetSharedANumber() ([]entities.Number, error)
 	IsReserved(number string) (bool, error)
 	SubscribeMe(user uuid.UUID, number string) error
+	WithdrawFromWallet(userid uuid.UUID, amount int) error
 }

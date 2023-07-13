@@ -24,10 +24,6 @@ func (r *PGRepository) GetSharedANumber() ([]entities.Number, error) {
 	return sharedNumbers, err
 }
 
-func (r *PGRepository) IsNumberFree(number string) (bool, error) {
-	return true, nil
-}
-
 func (r *PGRepository) SubscribeMe(user uuid.UUID, number string) error {
 	var Numb entities.Number
 	Numb.ID = uuid.New()
