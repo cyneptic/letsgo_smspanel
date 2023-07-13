@@ -29,10 +29,13 @@ type PhoneBookServiceContract interface {
 }
 
 type ContactServiceContract interface {
-	CreateContact(contactModel entities.Contact) (entities.Contact, error)
+	CreateContactByUsername(contactModel entities.Contact) (entities.Contact, error)
+	ListContactByUsername(contactModel entities.Contact) ([]entities.Contact, error)
 	GetContactByUsername(contactModel entities.Contact) (entities.Contact, error)
-	UpdateContactByUsername(contactModel entities.Contact) (entities.Contact, error)
+	UpdateContactByUsername(username string,contactModel entities.Contact) (entities.Contact, error)
 	DeleteContactByUsername(contactModel entities.Contact) error
+	
+	CreateContact(contactModel entities.Contact) (entities.Contact, error)
 	GetContactList(contactModel entities.Contact) ([]entities.Contact, error)
 	GetContactById(contactModel entities.Contact) (entities.Contact, error)
 	UpdateContactById(contactModel entities.Contact) (entities.Contact, error)
