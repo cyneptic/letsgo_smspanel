@@ -18,6 +18,8 @@ type SnedSMSRepositoryContract interface {
 	WithdrawFromWallet(userid uuid.UUID, amount int) error
 	GetSinglePrice() (int, error)
 	GetGroupPrice() (int, error)
+	GetBlackListWords() ([]entities.BlacklistWord, error)
+	GetBlackListRegex() ([]entities.BlacklistRegex, error)
 }
 type PhoneBookRepositoryContract interface {
 	CreatePhoneBookList(phoneBookModel entities.PhoneBook) (entities.PhoneBook, error)

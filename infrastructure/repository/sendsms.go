@@ -8,6 +8,24 @@ import (
 	"github.com/google/uuid"
 )
 
+func (pc *PGRepository) GetBlackListWords() ([]entities.BlacklistWord, error) {
+	var result []entities.BlacklistWord
+	if err := pc.DB.Model(&entities.BlacklistWord{}).Find(&result).Error; err != nil {
+		return []entities.BlacklistWord{}, err
+	}
+
+	return result, nil
+}
+
+func (pc *PGRepository) GetBlackListRegex() ([]entities.BlacklistRegex, error) {
+	var result []entities.BlacklistRegex
+	if err := pc.DB.Model(&entities.BlacklistRegex{}).Find(&result).Error; err != nil {
+		return []entities.BlacklistRegex{}, err
+	}
+
+	return result, nil
+}
+
 // !send sms repository
 func (pc *PGRepository) RequestContactList(id uuid.UUID) ([]entities.Contact, error) {
 	var phoneBook entities.PhoneBook

@@ -3,12 +3,21 @@ package provider
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"strings"
 )
 
 type KavenegarProvider struct {
 	urlFormat string
 	token     string
+}
+
+func NewSMSProvider() *KavenegarProvider {
+	token := os.Getenv("SMS_PROVIDER_TOKEN")
+	return &KavenegarProvider{
+		token:     token,
+		urlFormat: "https://api.kavenegar.com/v1/%s/sms/send.json?receptor=%s&sender=%s&message=%s",
+	}
 }
 
 func (s *KavenegarProvider) makeRequestUrl(sender, receiver, message string) string {

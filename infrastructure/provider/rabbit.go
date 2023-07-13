@@ -15,6 +15,17 @@ type RabbitQueue struct {
 	smsProvider ports.QueueProviderContract
 }
 
+func NewQueueConnection() (*RabbitQueue, error) {
+	conn, err := newRabbitConnection()
+	if err != nil {
+		return nil, err
+	}
+	return &RabbitQueue{
+		con:         conn,
+		smsProvider: NewSMSProvider(),
+	}, nil
+}
+
 func newRabbitConnection() (*amqp.Connection, error) {
 	host := os.Getenv("RABBIT_HOST")
 	port := os.Getenv("RABBITMQ_PORT")

@@ -1,6 +1,9 @@
 package service
 
 import (
+	"errors"
+	"regexp"
+	"strings"
 	"time"
 
 	"github.com/cyneptic/letsgo-smspanel/infrastructure/provider"
@@ -17,6 +20,7 @@ type SendSMSService struct {
 }
 
 type IntervalMessage struct {
+	UserID          uuid.UUID
 	sender, content string
 	receivers       []string
 }
@@ -35,6 +39,35 @@ func NewSendSMSService() *SendSMSService {
 	}
 	go result.SendInterval()
 	return result
+}
+
+func (svc *SendSMSService) CheckForBlackList(msg string) error {
+	blacklistWords, err := svc.db.GetBlackListWords()
+	if err != nil {
+		return err
+	}
+	for _, v := range blacklistWords {
+		if strings.Contains(msg, v.Word) {
+			return errors.New("Blacklisted word detected, unable to send message.")
+		}
+	}
+
+	BlacklistExpressions, err := svc.db.GetBlackListRegex()
+	if err != nil {
+		return err
+	}
+
+	for _, v := range BlacklistExpressions {
+		expr, err := regexp.Compile(v.Expression)
+		if err != nil {
+			return err
+		}
+		if expr.Match([]byte(msg)) {
+			return errors.New("Blacklisted word detected, unable to send message.")
+		}
+	}
+
+	return nil
 }
 
 // !SendToContactList
@@ -117,7 +150,9 @@ func (svc *SendSMSService) SendInterval() {
 	for {
 		select {
 		case msg := <-svc.ich:
+			svc.CollectCost(msg.UserID, 10)
 			svc.pv.Publisher(msg.sender, msg.content, msg.receivers)
+
 		}
 	}
 }
@@ -140,7 +175,7 @@ func (svc *SendSMSService) SendToContactListInterval(msg entities.Message, inter
 		for {
 			select {
 			case <-ticker.C:
-				svc.ich <- IntervalMessage{msg.Sender, msg.Content, dataColloctionNumber}
+				svc.ich <- IntervalMessage{msg.UserID, msg.Sender, msg.Content, dataColloctionNumber}
 			case <-quit:
 				ticker.Stop()
 				return
