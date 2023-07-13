@@ -6,40 +6,39 @@ import (
 	"github.com/cyneptic/letsgo-smspanel/internal/core/entities"
 )
 
-func (r *PGRepository) CreateUser(phoneBookModel entities.User) (entities.User, error) {
-	var User entities.User
-	User.Name = phoneBookModel.Name
-	User.Email = phoneBookModel.Email
-	User.Password = phoneBookModel.Password
-	User.PhoneNumber = phoneBookModel.PhoneNumber
-	User.Role = phoneBookModel.Role
+func (r *PGRepository) CreatePhoneBook(phoneBookModel entities.PhoneBook) (entities.PhoneBook, error) {
 
-	err := r.DB.Create(&User).Error
-	return User, err
-}
-func (r *PGRepository) CreatePhoneBookList(phoneBookModel entities.PhoneBook) (entities.PhoneBook, error) {
-	var PhoneBook entities.PhoneBook
-	PhoneBook.Name = phoneBookModel.Name
-	PhoneBook.UserId = phoneBookModel.UserId
+	var phoneBook entities.PhoneBook
+	phoneBook.Name = phoneBookModel.Name
+	phoneBook.UserId = phoneBookModel.UserId
 
-	err := r.DB.Create(&PhoneBook).Error
-	return PhoneBook, err
+	// Create phone book entry
+	err := r.DB.Create(&phoneBook).Error
+	if err != nil {
+		return phoneBook, err
+	}
+
+	return phoneBook, nil
 }
 
 func (r *PGRepository) GetPhoneBookList(phoneBookModel entities.PhoneBook) ([]entities.PhoneBook, error) {
-	PhoneBooks := []entities.PhoneBook{}
 
-	err := r.DB.Where("user_id = ?", phoneBookModel.UserId).Find(&PhoneBooks).Error
+	phoneBooks := []entities.PhoneBook{}
+
+	// Retrieve phone book list
+	err := r.DB.Where("user_id = ?", phoneBookModel.UserId).Find(&phoneBooks).Error
 	if err != nil {
-		return PhoneBooks, err
+		return phoneBooks, err
 	}
 
-	return PhoneBooks, nil
+	return phoneBooks, nil
 }
 
 func (r *PGRepository) GetPhoneBookById(phoneBookModel entities.PhoneBook) (entities.PhoneBook, error) {
+
 	var phoneBook entities.PhoneBook
 
+	// Retrieve phone book by ID
 	err := r.DB.Where("user_id = ? AND id = ?", phoneBookModel.UserId, phoneBookModel.ID).First(&phoneBook).Error
 	if err != nil {
 		return entities.PhoneBook{}, err
@@ -49,8 +48,10 @@ func (r *PGRepository) GetPhoneBookById(phoneBookModel entities.PhoneBook) (enti
 }
 
 func (r *PGRepository) UpdatePhoneBookById(phoneBookModel entities.PhoneBook) (entities.PhoneBook, error) {
+
 	var phoneBook entities.PhoneBook
 
+	// Retrieve phone book by ID
 	err := r.DB.Where("user_id = ? AND id = ?", phoneBookModel.UserId, phoneBookModel.ID).First(&phoneBook).Error
 	if err != nil {
 		return phoneBook, err
@@ -68,8 +69,10 @@ func (r *PGRepository) UpdatePhoneBookById(phoneBookModel entities.PhoneBook) (e
 }
 
 func (r *PGRepository) DeletePhoneBookById(phoneBookModel entities.PhoneBook) error {
+
 	var phoneBook entities.PhoneBook
 
+	// Delete phone book by ID
 	err := r.DB.Where("user_id = ? AND id = ?", phoneBookModel.UserId, phoneBookModel.ID).Delete(&phoneBook).Error
 	if err != nil {
 		return err
