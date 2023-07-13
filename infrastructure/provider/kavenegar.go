@@ -2,7 +2,10 @@ package provider
 
 import (
 	"fmt"
+	"github.com/labstack/gommon/log"
 	"net/http"
+	"os"
+	"strconv"
 	"strings"
 )
 
@@ -24,10 +27,21 @@ func (s *KavenegarProvider) makeReceivers(receiver []string) string {
 }
 
 func (s *KavenegarProvider) SendMessage(sender, msg string, receivers []string) (isSuccessful bool) {
+	isDebug, err := strconv.ParseBool(
+		os.Getenv("DEBUG"),
+	)
+	if err != nil {
+		return false
+	}
+	if isDebug {
+		for _, receiver := range receivers {
+			log.Info(fmt.Sprintf("*******\nsuccess\nsender: %s\nreceiver: %s\nmessage: %s", sender, receiver, msg))
+		}
+		return true
+	} else {
+		receiverNumbers := s.makeReceivers(receivers)
+		response, _ := http.Get(s.makeRequestUrl(sender, receiverNumbers, msg))
+		return response.StatusCode == http.StatusOK
+	}
 
-	receiverNumbers := s.makeReceivers(receivers)
-
-	response, _ := http.Get(s.makeRequestUrl(sender, receiverNumbers, msg))
-
-	return response.StatusCode == http.StatusOK
 }

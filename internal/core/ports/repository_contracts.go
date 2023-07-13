@@ -38,6 +38,15 @@ type ContactRepositoryContract interface {
 	DeleteContactById(contactModel entities.Contact) error
 }
 
+
+type NumberRepositoryContract interface {
+	BuyANumber(userID uuid.UUID, number string) error
+	GetSharedANumber() ([]entities.Number, error)
+	IsReserved(number string) (bool, error)
+	SubscribeMe(user uuid.UUID, number string) error
+	WithdrawFromWallet(userid uuid.UUID, amount int) error
+}
+
 type AdminActionsRepositoryContract interface {
 	EditSingleMessagePrice(amount int) error
 	EditGroupMessagePrice(amount int) error
@@ -47,4 +56,5 @@ type AdminActionsRepositoryContract interface {
 	RemoveBlacklistWord(word string) error
 	AddBlacklistRegex(regex string) error
 	RemoveBlacklistRegex(regex string) error
+
 }
