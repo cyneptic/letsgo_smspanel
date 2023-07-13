@@ -15,6 +15,9 @@ type SnedSMSRepositoryContract interface {
 	RequestContactList(id uuid.UUID) ([]entities.Contact, error)
 	RequestNumber(id uuid.UUID) (entities.Number, error)
 	RequestUser(id uuid.UUID) (entities.User, error)
+	WithdrawFromWallet(userid uuid.UUID, amount int) error
+	GetSinglePrice() (int, error)
+	GetGroupPrice() (int, error)
 }
 type PhoneBookRepositoryContract interface {
 	CreatePhoneBook(phoneBookModel entities.PhoneBook) (entities.PhoneBook, error)
@@ -36,4 +39,25 @@ type ContactRepositoryContract interface {
 	GetContactById(contactModel entities.Contact) (entities.Contact, error)
 	UpdateContactById(contactModel entities.Contact) (entities.Contact, error)
 	DeleteContactById(contactModel entities.Contact) error
+}
+
+
+type NumberRepositoryContract interface {
+	BuyANumber(userID uuid.UUID, number string) error
+	GetSharedANumber() ([]entities.Number, error)
+	IsReserved(number string) (bool, error)
+	SubscribeMe(user uuid.UUID, number string) error
+	WithdrawFromWallet(userid uuid.UUID, amount int) error
+}
+
+type AdminActionsRepositoryContract interface {
+	EditSingleMessagePrice(amount int) error
+	EditGroupMessagePrice(amount int) error
+	GetUserHistory(uId uuid.UUID) ([]entities.Message, error)
+	SearchAllMessages(query string) ([]entities.Message, error)
+	AddBlacklistWord(word string) error
+	RemoveBlacklistWord(word string) error
+	AddBlacklistRegex(regex string) error
+	RemoveBlacklistRegex(regex string) error
+
 }

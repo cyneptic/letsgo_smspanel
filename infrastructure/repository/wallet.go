@@ -1,7 +1,9 @@
 package repositories
 
 import (
+	"errors"
 	"fmt"
+
 	"github.com/cyneptic/letsgo-smspanel/internal/core/entities"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -50,4 +52,23 @@ func (r *PGRepository) GetWallet(walletID uuid.UUID) (*entities.Wallet, error) {
 		return nil, err
 	}
 	return &wallet, nil
+}
+
+func (r *PGRepository) WithdrawFromWallet(userid uuid.UUID, amount int) error {
+	var wallet entities.Wallet
+	err := r.DB.Model(&entities.Wallet{}).Where("user_id = ?", userid).First(&wallet).Error
+	if err != nil {
+		return err
+	}
+	if wallet.Credit-amount < 0 {
+		return errors.New("Not enough credit")
+	}
+	wallet.Credit = wallet.Credit - amount
+
+	err = r.DB.Save(&wallet).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

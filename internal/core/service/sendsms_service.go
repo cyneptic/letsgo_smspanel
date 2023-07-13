@@ -7,6 +7,7 @@ import (
 	repositories "github.com/cyneptic/letsgo-smspanel/infrastructure/repository"
 	"github.com/cyneptic/letsgo-smspanel/internal/core/entities"
 	"github.com/cyneptic/letsgo-smspanel/internal/core/ports"
+	"github.com/google/uuid"
 )
 
 type SendSMSService struct {
@@ -36,6 +37,16 @@ func (svc *SendSMSService) SendToContactList(msg entities.Message) error {
 	for _, contact := range dataContacts {
 		dataColloctionNumber = append(dataColloctionNumber, contact.PhoneNumber)
 	}
+
+	price, err := svc.db.GetGroupPrice()
+	if err != nil {
+		return err
+	}
+	err = svc.CollectCost(msg.UserID, price)
+	if err != nil {
+		return err
+	}
+
 	svc.pv.Publisher(msg.Sender, msg.Content, dataColloctionNumber)
 	return nil
 }
@@ -48,6 +59,16 @@ func (svc *SendSMSService) SendToNumber(msg entities.Message) error {
 		panic(err)
 	}
 	dataColloctionNumber = append(dataColloctionNumber, dataPhone.No)
+
+	price, err := svc.db.GetSinglePrice()
+	if err != nil {
+		return err
+	}
+	err = svc.CollectCost(msg.UserID, price)
+	if err != nil {
+		return err
+	}
+
 	svc.pv.Publisher(msg.Sender, msg.Content, dataColloctionNumber)
 	return nil
 }
@@ -60,7 +81,25 @@ func (svc *SendSMSService) SendToUser(msg entities.Message) error {
 		panic(err)
 	}
 	dataColloctionNumber = append(dataColloctionNumber, dataUser.PhoneNumber)
+
+	price, err := svc.db.GetSinglePrice()
+	if err != nil {
+		return err
+	}
+	err = svc.CollectCost(msg.UserID, price)
+	if err != nil {
+		return err
+	}
+
 	svc.pv.Publisher(msg.Sender, msg.Content, dataColloctionNumber)
+	return nil
+}
+
+func (svc *SendSMSService) CollectCost(userid uuid.UUID, amount int) error {
+	err := svc.db.WithdrawFromWallet(userid, amount)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
