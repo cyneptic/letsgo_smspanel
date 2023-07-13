@@ -8,6 +8,7 @@ import (
 	repositories "github.com/cyneptic/letsgo-smspanel/infrastructure/repository"
 	"github.com/cyneptic/letsgo-smspanel/internal/core/entities"
 	"github.com/cyneptic/letsgo-smspanel/internal/core/ports"
+	"github.com/google/uuid"
 )
 
 type TemplateService struct {
@@ -22,6 +23,7 @@ func NewTemplateService() *TemplateService {
 }
 
 func (svc *TemplateService) CreateTemplate(temp entities.Template) error {
+	temp.ID = uuid.New()
 	err := svc.db.AddTemplate(temp)
 	if err != nil {
 		panic(err)
