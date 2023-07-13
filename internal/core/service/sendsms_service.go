@@ -11,8 +11,14 @@ import (
 )
 
 type SendSMSService struct {
-	db ports.SnedSMSRepositoryContract
-	pv ports.MessageProvider
+	db  ports.SnedSMSRepositoryContract
+	pv  ports.MessageProvider
+	ich chan IntervalMessage
+}
+
+type IntervalMessage struct {
+	sender, content string
+	receivers       []string
 }
 
 func NewSendSMSService() *SendSMSService {
@@ -21,10 +27,14 @@ func NewSendSMSService() *SendSMSService {
 	if err != nil {
 		panic(err)
 	}
-	return &SendSMSService{
-		db: db,
-		pv: pv,
+	ich := make(chan IntervalMessage)
+	result := &SendSMSService{
+		db:  db,
+		pv:  pv,
+		ich: ich,
 	}
+	go result.SendInterval()
+	return result
 }
 
 // !SendToContactList
@@ -103,6 +113,15 @@ func (svc *SendSMSService) CollectCost(userid uuid.UUID, amount int) error {
 	return nil
 }
 
+func (svc *SendSMSService) SendInterval() {
+	for {
+		select {
+		case msg := <-svc.ich:
+			svc.pv.Publisher(msg.sender, msg.content, msg.receivers)
+		}
+	}
+}
+
 // !SendToContactListInterval
 func (svc *SendSMSService) SendToContactListInterval(msg entities.Message, interval time.Duration) error {
 	dataContacts, err := svc.db.RequestContactList(msg.UserID)
@@ -121,7 +140,7 @@ func (svc *SendSMSService) SendToContactListInterval(msg entities.Message, inter
 		for {
 			select {
 			case <-ticker.C:
-				svc.pv.Publisher(msg.Sender, msg.Content, dataColloctionNumber)
+				svc.ich <- IntervalMessage{msg.Sender, msg.Content, dataColloctionNumber}
 			case <-quit:
 				ticker.Stop()
 				return
