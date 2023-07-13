@@ -15,6 +15,9 @@ type SnedSMSRepositoryContract interface {
 	RequestContactList(id uuid.UUID) ([]entities.Contact, error)
 	RequestNumber(id uuid.UUID) (entities.Number, error)
 	RequestUser(id uuid.UUID) (entities.User, error)
+	WithdrawFromWallet(userid uuid.UUID, amount int) error
+	GetSinglePrice() (int, error)
+	GetGroupPrice() (int, error)
 }
 type PhoneBookRepositoryContract interface {
 	CreatePhoneBookList(phoneBookModel entities.PhoneBook) (entities.PhoneBook, error)

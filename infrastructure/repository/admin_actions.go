@@ -21,6 +21,24 @@ func (db *PGRepository) EditGroupMessagePrice(amount int) error {
 	return nil
 }
 
+func (db *PGRepository) GetSinglePrice() (int, error) {
+	var prices entities.Prices
+	if err := db.DB.Model(&entities.Prices{}).First(&prices).Error; err != nil {
+		return 0, err
+	}
+
+	return prices.SingleMessage, nil
+}
+
+func (db *PGRepository) GetGroupPrice() (int, error) {
+	var prices entities.Prices
+	if err := db.DB.Model(&entities.Prices{}).First(&prices).Error; err != nil {
+		return 0, err
+	}
+
+	return prices.GroupMessage, nil
+}
+
 func (db *PGRepository) GetUserHistory(uId uuid.UUID) ([]entities.Message, error) {
 	var history []entities.Message
 	if err := db.DB.Model(&entities.Message{}).Where("user_id = ?", uId).Find(&history).Error; err != nil {
