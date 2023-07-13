@@ -150,9 +150,15 @@ func (svc *SendSMSService) SendInterval() {
 	for {
 		select {
 		case msg := <-svc.ich:
-			svc.CollectCost(msg.UserID, 10)
+			price, err := svc.db.GetGroupPrice()
+			if err != nil {
+				return
+			}
+			err = svc.CollectCost(msg.UserID, price)
+			if err != nil {
+				return
+			}
 			svc.pv.Publisher(msg.sender, msg.content, msg.receivers)
-
 		}
 	}
 }
