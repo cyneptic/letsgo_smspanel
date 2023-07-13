@@ -16,6 +16,7 @@ func main() {
 	controllers.AddContactRoutes(e)
 	controllers.AddTemplateRoutes(e)
 	controllers.AddWalletHRoutes(e)
+	controllers.AddAdminActionRoutes(e)
 
 	if err := e.Start(":8080"); err != nil {
 		log.Fatalf("Failed to start server: %v", err)

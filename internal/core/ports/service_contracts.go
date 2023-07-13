@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/cyneptic/letsgo-smspanel/internal/core/entities"
+	"github.com/google/uuid"
 )
 
 type TemplateContract interface {
@@ -37,4 +38,16 @@ type ContactServiceContract interface {
 	GetContactById(contactModel entities.Contact) (entities.Contact, error)
 	UpdateContactById(contactModel entities.Contact) (entities.Contact, error)
 	DeleteContactById(contactModel entities.Contact) error
+}
+
+type AdminActionServiceContract interface {
+	EditSingleMessagePrice(userId uuid.UUID, price int) error
+	EditGroupMessagePrice(userId uuid.UUID, price int) error
+	DisableUserAccount(userId uuid.UUID, target uuid.UUID, toggle bool) error
+	GetUserHistory(userId uuid.UUID, target uuid.UUID) ([]entities.Message, error)
+	SearchAllMessages(userid uuid.UUID, query string) ([]entities.Message, error)
+	AddBlacklistWord(userid uuid.UUID, word string) error
+	RemoveBlacklistWord(userid uuid.UUID, word string) error
+	AddBlacklistRegex(userid uuid.UUID, regex string) error
+	RemoveBlacklistRegex(userid uuid.UUID, regex string) error
 }
