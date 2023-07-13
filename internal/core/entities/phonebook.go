@@ -6,6 +6,6 @@ import (
 
 type PhoneBook struct {
 	DBModel
-	UserId uuid.UUID `gorm:"type:uuid" json:"user_id"`
+	UserId uuid.UUID `gorm:"type:uuid;Column:user_id" json:"user_id"`
 	Name   string    `gorm:"size:255" json:"name"`
 }

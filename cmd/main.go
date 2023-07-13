@@ -16,9 +16,12 @@ func main() {
 	e := echo.New()
 	e.Use(middleware.CustomLogger)
 	controllers.AddPhoneBookRoutes(e)
+	controllers.AddSendSMSRouters(e)
 	controllers.AddContactRoutes(e)
+	controllers.AddTemplateRoutes(e)
 	controllers.AddWalletHRoutes(e)
 	controllers.RegisterNumberHandler(e)
+  controllers.AddAdminActionRoutes(e)
 	appPort := fmt.Sprintf(":%s", os.Getenv("PORT"))
 	if err := e.Start(appPort); err != nil {
 		log.Fatalf("Failed to start server: %v", err)

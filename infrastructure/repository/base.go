@@ -31,9 +31,26 @@ func GormInit() (*gorm.DB, error) {
 		log.Printf("Failed to connect to database: %v", err)
 		return nil, err
 	}
-	err = db.AutoMigrate(&entities.Contact{}, &entities.Message{}, &entities.Number{}, &entities.PhoneBook{}, &entities.Transaction{}, &entities.User{}, &entities.Wallet{})
+	err = db.AutoMigrate(&entities.Template{}, &entities.BlacklistWord{}, &entities.BlacklistRegex{}, &entities.Prices{}, &entities.Contact{}, &entities.Message{}, &entities.Number{}, &entities.PhoneBook{}, &entities.Transaction{}, &entities.User{}, &entities.Wallet{})
 	if err != nil {
 		return nil, err
+	}
+	var pricesCount int64
+	db.Model(&entities.Prices{}).Count(&pricesCount)
+
+	if pricesCount == 0 {
+		single, err := strconv.Atoi(os.Getenv("DEFAULT_PRICE_SINGLE"))
+		if err != nil {
+			return nil, err
+		}
+		group, err := strconv.Atoi(os.Getenv("DEFAULT_PRICE_GROUP"))
+		if err != nil {
+			return nil, err
+		}
+		db.Create(&entities.Prices{
+			SingleMessage: single,
+			GroupMessage:  group,
+		})
 	}
 
 	return db, nil

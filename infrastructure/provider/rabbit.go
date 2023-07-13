@@ -3,10 +3,11 @@ package provider
 import (
 	"errors"
 	"fmt"
-	"github.com/cyneptic/letsgo-smspanel/internal/core/ports"
-	amqp "github.com/rabbitmq/amqp091-go"
 	"log"
 	"os"
+
+	"github.com/cyneptic/letsgo-smspanel/internal/core/ports"
+	amqp "github.com/rabbitmq/amqp091-go"
 )
 
 type RabbitQueue struct {
