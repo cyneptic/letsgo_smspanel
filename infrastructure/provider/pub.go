@@ -4,8 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	amqp "github.com/rabbitmq/amqp091-go"
 	"time"
+
+	amqp "github.com/rabbitmq/amqp091-go"
 )
 
 func (q *RabbitQueue) Publisher(sender, msg string, receivers []string) {

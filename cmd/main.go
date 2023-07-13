@@ -12,7 +12,9 @@ func main() {
 	e := echo.New()
 	e.Use(middleware.CustomLogger)
 	controllers.AddPhoneBookRoutes(e)
+	controllers.AddSendSMSRouters(e)
 	controllers.AddContactRoutes(e)
+	controllers.AddTemplateRoutes(e)
 	controllers.AddWalletHRoutes(e)
 	controllers.AddAdminActionRoutes(e)
 

@@ -22,24 +22,20 @@ func NewGormDatabase() *PGRepository {
 }
 
 func GormInit() (*gorm.DB, error) {
-	err := godotenv.Load()
-	if err != nil {
-		log.Printf("Error loading .env file: %v", err)
-	}
+	_ = godotenv.Load(".env")
 
-	host := os.Getenv("DATABASE_HOST")
-	user := os.Getenv("DATABASE_USER")
-	password := os.Getenv("DATABASE_PASSWORD")
-	dbName := os.Getenv("DATABASE_NAME")
-	port, _ := strconv.Atoi(os.Getenv("DATABASE_PORT"))
-
-	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=disable TimeZone=Asia/Jakarta", host, user, password, dbName, port)
+	host := os.Getenv("POSTGRES_HOST")
+	user := os.Getenv("POSTGRES_USERNAME")
+	password := os.Getenv("POSTGRES_PASSWORD")
+	dbName := os.Getenv("POSTGRES_NAME")
+	port := os.Getenv("POSTGRES_PORT")
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Jakarta", host, user, password, dbName, port)
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Printf("Failed to connect to database: %v", err)
 		return nil, err
 	}
-	err = db.AutoMigrate(&entities.BlacklistWord{}, &entities.BlacklistRegex{}, &entities.Prices{}, &entities.Contact{}, &entities.Message{}, &entities.Number{}, &entities.PhoneBook{}, &entities.Transaction{}, &entities.User{}, &entities.Wallet{})
+	err = db.AutoMigrate(&entities.Template{}, &entities.BlacklistWord{}, &entities.BlacklistRegex{}, &entities.Prices{}, &entities.Contact{}, &entities.Message{}, &entities.Number{}, &entities.PhoneBook{}, &entities.Transaction{}, &entities.User{}, &entities.Wallet{})
 	if err != nil {
 		return nil, err
 	}

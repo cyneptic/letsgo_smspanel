@@ -5,6 +5,17 @@ import (
 	"github.com/google/uuid"
 )
 
+type TemplateRepositoryContract interface {
+	AddTemplate(temp entities.Template) error
+	GetTemplate(tempname string) (entities.Template, error)
+	AllTemplates() ([]entities.Template, error)
+}
+
+type SnedSMSRepositoryContract interface {
+	RequestContactList(id uuid.UUID) ([]entities.Contact, error)
+	RequestNumber(id uuid.UUID) (entities.Number, error)
+	RequestUser(id uuid.UUID) (entities.User, error)
+}
 type PhoneBookRepositoryContract interface {
 	CreatePhoneBookList(phoneBookModel entities.PhoneBook) (entities.PhoneBook, error)
 	GetPhoneBookList(phoneBookModel entities.PhoneBook) ([]entities.PhoneBook, error)
