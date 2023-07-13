@@ -14,3 +14,8 @@ type QueueProviderContract interface {
 type MessageProvider interface {
 	Publisher(sender, msg string, receivers []string)
 }
+
+type PaymentGateWayContract interface {
+	CreatePayment(amount string, order uuid.UUID, payerID string) (string, string, error)
+	VerifyPayment(PayerID, RefId, orderId, SaleReferenceId string) (bool, error)
+}

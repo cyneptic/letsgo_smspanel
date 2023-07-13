@@ -72,3 +72,17 @@ func (r *PGRepository) WithdrawFromWallet(userid uuid.UUID, amount int) error {
 
 	return nil
 }
+
+func (r *RedisDB) SetPaymentRequest(orderID uuid.UUID, payerID, refID, amount string) error {
+	key := fmt.Sprintf("%s-%v-%s", payerID, orderID.ID(), refID)
+	r.Client.Set(key, amount, -1)
+	return nil
+}
+func (r *RedisDB) VerifyPaymentRequest(payerID, refID, orderID string) (string, bool, error) {
+	keys, _ := r.Client.Keys(fmt.Sprintf("%s-%s-%s", payerID, orderID, refID)).Result()
+	if len(keys) > 0 {
+		amount := r.Client.Get(keys[0])
+		return amount.String(), true, nil
+	}
+	return "", false, errors.New("invalid payment")
+}
