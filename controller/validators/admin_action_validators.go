@@ -1,6 +1,7 @@
 package validators
 
 import (
+	"errors"
 	"regexp"
 	"strconv"
 
@@ -17,7 +18,7 @@ func (v *AdminActionValidator) PriceValidator(userid string, price string) error
 
 	p, err := strconv.Atoi(price)
 	if err != nil || p <= 0 {
-		return err
+		return errors.New("entered price is invalid")
 	}
 
 	return nil
