@@ -59,7 +59,7 @@ func setupTestEnvironmetUser(t *testing.T) (*repositories.PGRepository, *entitie
 		PhoneNumber: "09121232231",
 	}
 
-	user, err := repo.DB.Create(&user)
+	user, err := repo.CreateUser(user)
 	assert.NoError(t, err)
 
 	var userSample entities.User

@@ -26,7 +26,7 @@ func (svc *TemplateService) CreateTemplate(temp entities.Template) error {
 	temp.ID = uuid.New()
 	err := svc.db.AddTemplate(temp)
 	if err != nil {
-		panic(err)
+		return err
 	}
 	return nil
 }
