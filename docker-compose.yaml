@@ -1,12 +1,24 @@
 version: "3"
 
 services:
+  nginx:
+    build: './nginx'
+    container_name: 'nginx'
+    restart: 'always'
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - pgdb
+
+
   rabbit:
     image: rabbitmq:3-management
     container_name: rabbitmq
     expose:
       - ${RABBITMQ_PORT}
-      - ${RABBITMQ_MANAGEMENT_PORT}
+    ports:
+      - "${RABBITMQ_MANAGEMENT_PORT}:${RABBITMQ_MANAGEMENT_PORT}"
     volumes:
       - "~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/"
       - "~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq"
@@ -42,10 +54,10 @@ services:
     build: .
     volumes:
       - .:/code
-    ports:
-      - ${PORT}:${PORT}
+    expose:
+      - ${PORT}
     depends_on:
-      - pgdb
+      - nginx
 
 networks:
   main:

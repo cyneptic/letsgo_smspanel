@@ -18,8 +18,8 @@ func NewPhoneBookService() *PhoneBookService {
 	}
 }
 
-func (svc *PhoneBookService) CreatePhoneBookList(phoneBookModel entities.PhoneBook) (entities.PhoneBook, error) {
-	return svc.db.CreatePhoneBookList(phoneBookModel)
+func (svc *PhoneBookService) CreatePhoneBook(phoneBookModel entities.PhoneBook) (entities.PhoneBook, error) {
+	return svc.db.CreatePhoneBook(phoneBookModel)
 }
 
 func (svc *PhoneBookService) GetPhoneBookList(phoneBookModel entities.PhoneBook) ([]entities.PhoneBook, error) {

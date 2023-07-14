@@ -22,7 +22,7 @@ func setupTestEnvironmetContactList(t *testing.T) (*repositories.PGRepository, *
 	}
 
 	//todo create phoneBookList
-	_, err := repo.CreatePhoneBookList(phoneBook)
+	_, err := repo.CreatePhoneBook(phoneBook)
 	assert.NoError(t, err)
 
 	var phoneBookSample entities.PhoneBook
