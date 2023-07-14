@@ -3,3 +3,4 @@ data/
 redis_data/
 todos.md
 .idea
+.vscode

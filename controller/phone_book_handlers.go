@@ -51,7 +51,7 @@ func (h *PhoneBookHandler) CreatePhoneBookHandler(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
 
-	newPhoneBook, err := h.svc.CreatePhoneBookList(phoneBookModel)
+	newPhoneBook, err := h.svc.CreatePhoneBook(phoneBookModel)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
