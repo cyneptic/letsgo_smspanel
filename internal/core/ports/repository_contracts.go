@@ -41,7 +41,6 @@ type ContactRepositoryContract interface {
 	DeleteContactById(contactModel entities.Contact) error
 }
 
-
 type NumberRepositoryContract interface {
 	BuyANumber(userID uuid.UUID, number string) error
 	GetSharedANumber() ([]entities.Number, error)
@@ -59,5 +58,9 @@ type AdminActionsRepositoryContract interface {
 	RemoveBlacklistWord(word string) error
 	AddBlacklistRegex(regex string) error
 	RemoveBlacklistRegex(regex string) error
+}
 
+type PaymentDbContract interface {
+	SetPaymentRequest(orderID uuid.UUID, payerID, refID, amount string) error
+	VerifyPaymentRequest(payerID, refID, orderID string) (string, bool, error)
 }

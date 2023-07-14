@@ -3,14 +3,20 @@ package repositories
 import (
 	"fmt"
 	"github.com/cyneptic/letsgo-smspanel/internal/core/entities"
+	"github.com/go-redis/redis"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"log"
 	"os"
+	"strconv"
+	"sync"
 )
 
 type PGRepository struct {
 	DB *gorm.DB
+}
+type RedisDB struct {
+	Client *redis.Client
 }
 
 func NewGormDatabase() *PGRepository {
@@ -54,4 +60,25 @@ func GormInit() (*gorm.DB, error) {
 	}
 
 	return db, nil
+}
+
+func createRedisConnection() *redis.Client {
+	redisClient := redis.NewClient(&redis.Options{
+		Addr:     fmt.Sprintf("%s:%s", os.Getenv("REDIS_HOST"), os.Getenv("REDIS_HOST")),
+		Password: os.Getenv("REDIS_PASSWORD"),
+		DB:       0,
+	})
+	return redisClient
+
+}
+
+func RedisInit() *RedisDB {
+	o := sync.Once{}
+	var db *RedisDB
+	o.Do(func() {
+		db = &RedisDB{
+			Client: createRedisConnection(),
+		}
+	})
+	return db
 }
