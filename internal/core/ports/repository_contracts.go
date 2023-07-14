@@ -20,7 +20,7 @@ type SnedSMSRepositoryContract interface {
 	GetGroupPrice() (int, error)
 }
 type PhoneBookRepositoryContract interface {
-	CreatePhoneBookList(phoneBookModel entities.PhoneBook) (entities.PhoneBook, error)
+	CreatePhoneBook(phoneBookModel entities.PhoneBook) (entities.PhoneBook, error)
 	GetPhoneBookList(phoneBookModel entities.PhoneBook) ([]entities.PhoneBook, error)
 	GetPhoneBookById(phoneBookModel entities.PhoneBook) (entities.PhoneBook, error)
 	UpdatePhoneBookById(phoneBookModel entities.PhoneBook) (entities.PhoneBook, error)
@@ -28,14 +28,26 @@ type PhoneBookRepositoryContract interface {
 }
 
 type ContactRepositoryContract interface {
-	CreateContact(contactModel entities.Contact) (entities.Contact, error)
+	CreateContactByUsername(contactModel entities.Contact) (entities.Contact, error)
+	ListContactByUsername(contactModel entities.Contact) ([]entities.Contact, error)
 	GetContactByUsername(contactModel entities.Contact) (entities.Contact, error)
-	UpdateContactByUsername(contactModel entities.Contact) (entities.Contact, error)
+	UpdateContactByUsername(username string,contactModel entities.Contact) (entities.Contact, error)
 	DeleteContactByUsername(contactModel entities.Contact) error
+
+	CreateContact(contactModel entities.Contact) (entities.Contact, error)
 	GetContactList(contactModel entities.Contact) ([]entities.Contact, error)
 	GetContactById(contactModel entities.Contact) (entities.Contact, error)
 	UpdateContactById(contactModel entities.Contact) (entities.Contact, error)
 	DeleteContactById(contactModel entities.Contact) error
+}
+
+
+type NumberRepositoryContract interface {
+	BuyANumber(userID uuid.UUID, number string) error
+	GetSharedANumber() ([]entities.Number, error)
+	IsReserved(number string) (bool, error)
+	SubscribeMe(user uuid.UUID, number string) error
+	WithdrawFromWallet(userid uuid.UUID, amount int) error
 }
 
 type AdminActionsRepositoryContract interface {
@@ -47,4 +59,5 @@ type AdminActionsRepositoryContract interface {
 	RemoveBlacklistWord(word string) error
 	AddBlacklistRegex(regex string) error
 	RemoveBlacklistRegex(regex string) error
+
 }

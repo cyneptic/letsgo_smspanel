@@ -39,12 +39,12 @@ func GormInit() (*gorm.DB, error) {
 	loadEnv()
 
 	host := os.Getenv("POSTGRES_HOST")
-	user := os.Getenv("POSTGRES_USERNAME")
+	user := os.Getenv("POSTGRES_USER")
 	password := os.Getenv("POSTGRES_PASSWORD")
-	dbName := os.Getenv("POSTGRES_NAME")
+	dbName := os.Getenv("POSTGRES_DB")
 	port := os.Getenv("POSTGRES_PORT")
-	fmt.Println(port, dbName, password, host, user)
-	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Jakarta", host, user, password, dbName, port)
+
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Tehran", host, user, password, dbName, port)
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Printf("Failed to connect to database: %v", err)
