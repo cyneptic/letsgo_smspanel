@@ -61,7 +61,7 @@ func (r *PGRepository) WithdrawFromWallet(userid uuid.UUID, amount int) error {
 		return err
 	}
 	if wallet.Credit-amount < 0 {
-		return errors.New("Not enough credit")
+		return errors.New("not enough credit")
 	}
 	wallet.Credit = wallet.Credit - amount
 

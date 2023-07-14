@@ -2,15 +2,32 @@ package repositories
 
 import (
 	"fmt"
-	"github.com/cyneptic/letsgo-smspanel/internal/core/entities"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
 	"log"
 	"os"
+	"regexp"
+	"strconv"
+
+	"github.com/cyneptic/letsgo-smspanel/internal/core/entities"
+	"github.com/joho/godotenv"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 type PGRepository struct {
 	DB *gorm.DB
+}
+
+func loadEnv() {
+	const pDir = "letsgo_smspanel"
+	projectName := regexp.MustCompile(`^(.*` + pDir + `)`)
+	currentWorkDirectory, _ := os.Getwd()
+	rootPath := projectName.Find([]byte(currentWorkDirectory))
+
+	err := godotenv.Load(string(rootPath) + `/.env`)
+
+	if err != nil {
+		log.Fatalf("Error loading .env file")
+	}
 }
 
 func NewGormDatabase() *PGRepository {
@@ -19,6 +36,8 @@ func NewGormDatabase() *PGRepository {
 }
 
 func GormInit() (*gorm.DB, error) {
+	loadEnv()
+
 	host := os.Getenv("POSTGRES_HOST")
 	user := os.Getenv("POSTGRES_USER")
 	password := os.Getenv("POSTGRES_PASSWORD")

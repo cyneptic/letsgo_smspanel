@@ -2,16 +2,10 @@ package repositories
 
 import (
 	"github.com/cyneptic/letsgo-smspanel/internal/core/entities"
-	"github.com/google/uuid"
 )
 
 func (pc *PGRepository) AddTemplate(temp entities.Template) error {
-	t := entities.Template{
-		ID:       uuid.New(),
-		TempName: temp.TempName,
-		Content:  temp.Content,
-	}
-	res := pc.DB.Create(&t)
+	res := pc.DB.Create(&temp)
 	if res.Error != nil {
 		return res.Error
 	}
